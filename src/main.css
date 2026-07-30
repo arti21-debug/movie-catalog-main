@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serifTitle: "Source Serif 4", serif;
+  /* tiempos headline */
+  --font-text: "Lora", serif;
+  /* tiempos text */
+  --font-sans: "Inter", sans-serif;
+  /* graphik web */
+}
+
+@import "./normalize.css";
+@import "./fonts/fonts.css";
+@import "./index.css";
