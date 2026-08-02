@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { usePerson } from "../hooks/usePerson";
 import Header from "./SiteHeader";
-import { useState } from "react";
+import PersonData from "./PersonData";
 
 const departmentTitles = {
   Acting: "FILMS STARRING",
@@ -18,9 +18,7 @@ const departmentTitles = {
   Crew: "FILMS WITH CREW BY",
 };
 
-export default function PersonPage({ setQuery }) {
-  const [isBioHidden, setIsBioHidden] = useState(true);
-
+export default function PersonPage() {
   const {
     person,
     error: personError,
@@ -30,8 +28,6 @@ export default function PersonPage({ setQuery }) {
     movies,
     setCurrDepartment,
     title,
-    isHide,
-    cutedText,
   } = usePerson({ departmentTitles });
 
   const navigate = useNavigate();
@@ -39,21 +35,26 @@ export default function PersonPage({ setQuery }) {
 
   return (
     <div className="text-[#99AABB]">
-      <Header setQuery={setQuery} info={"main"} />
+      <Header info={"main"} />
       <div className="container">
-        <div className="flex justify-between gap-10 mt-8">
+        <div className="flex justify-between gap-10 mt-8 mb-8 max-[550px]:justify-center">
           <div>
-            <div>
-              <div className="tracking-wider text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)]">{title}</div>
+            <div className="max-[550px]:flex flex-col items-center">
+              <div className="tracking-wider text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)]">
+                {title}
+              </div>
               <h2 className="mt-1 text-[clamp(1.125rem,1.0179rem+0.4762vw,1.375rem)] text-white font-bold tracking-wider">
                 {person?.name}
               </h2>
+            </div>
+            <div className="hidden max-[550px]:flex justify-center mt-2">
+              <PersonData person={person} />
             </div>
             <div className="mt-6">
               <div className="w-full border-b"></div>
               <select
                 onChange={(e) => setCurrDepartment(e.target.value)}
-                className="mt-3 bg-[#283038] text-[#99aabb] text-sm border border-white/10 rounded-sm px-3 py-1.5 outline-none cursor-pointer hover:border-white/30 transition-colors duration-200"
+                className="w-[clamp(6.25rem,6.023rem+1.14vw,6.875rem)] mt-3 bg-[#283038] text-[#99aabb] text-sm border border-white/10 rounded-sm px-3 py-1.5 outline-none cursor-pointer hover:border-white/30 transition-colors duration-200"
               >
                 <option value={department}>{department}</option>
                 {uniqueDepartment
@@ -66,7 +67,7 @@ export default function PersonPage({ setQuery }) {
               </select>
               <div className="w-full mt-3 border-b"></div>
             </div>
-            <ul className="grid grid-cols-4 max-[880px]:grid-cols-3 max-[700px]:grid-cols-2 max-[550px]:grid-cols-1 gap-4 mt-4">
+            <ul className="grid grid-cols-4 max-[880px]:grid-cols-3 max-[700px]:grid-cols-2 gap-4 mt-4">
               {movies.map((movie, i) => {
                 return (
                   <li
@@ -113,32 +114,8 @@ export default function PersonPage({ setQuery }) {
               })}
             </ul>
           </div>
-          <div className="max-w-[clamp(11.25rem,10.114rem+5.68vw,14.375rem)]">
-            {person?.profile_path && (
-              <img
-                src={`https://image.tmdb.org/t/p/w342${person?.profile_path}`}
-                alt=""
-                className="w-full rounded-sm border"
-              />
-            )}
-            <div className="mt-4">
-              {isHide && isBioHidden ? (
-                <div>
-                  {cutedText}{" "}
-                  <button
-                    onClick={() =>
-                      setIsBioHidden(false)
-                    }
-                    className="ml-1 px-2 py-0 bg-[#283038] rounded-sm text-sm border-white/10 hover:text-gray-200 hover:bg-gray-700"
-                    aria-label="show full review"
-                  >
-                    •••
-                  </button>
-                </div>
-              ) : (
-                person?.biography
-              )}
-            </div>
+          <div className="max-[550px]:hidden">
+            <PersonData person={person} />
           </div>
         </div>
       </div>

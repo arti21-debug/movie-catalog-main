@@ -1,13 +1,12 @@
 import { useState } from "react";
 import Dropdown from "./Dropdown";
 import { useMovies } from "../hooks/useMovies";
-import { useSearch } from "../hooks/useSearch";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "./SiteHeader";
 
 const sort = ["GENRE", "COUNTRY", "RUNTIME", "Find by year", "Find by rating"];
 
-export default function MainPage({ query, setQuery }) {
+export default function MainPage() {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedCountries, setSelectedCountries] = useState([]);
   const [selectedRuntime, setSelectedRuntime] = useState({
@@ -23,7 +22,7 @@ export default function MainPage({ query, setQuery }) {
   });
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentGroup = Number(searchParams.get('page')) || 1;
+  const currentGroup = Number(searchParams.get("page")) || 1;
   const navigate = useNavigate();
 
   const {
@@ -39,16 +38,6 @@ export default function MainPage({ query, setQuery }) {
     selectedYears,
     selectedRating,
   });
-
-  const {
-    searchResult,
-    loading: searchLoading,
-    error: searchError,
-  } = useSearch(query);
-
-  const movies = query ? searchResult : movieResult;
-  const loading = query ? searchLoading : moviesLoading;
-  const error = query ? searchError : moviesError;
 
   const handleRatingChange = (rating) => {
     setSelectedRating(rating);
@@ -77,7 +66,7 @@ export default function MainPage({ query, setQuery }) {
 
   return (
     <>
-    <Header setQuery={setQuery} info={'main'} />
+      <Header info={"main"} />
       <main className="py-8">
         <div className="container">
           <div className="pb-3.75">
@@ -106,7 +95,7 @@ export default function MainPage({ query, setQuery }) {
             </div>
             <div className="border-b text-[#7b7f83]"></div>
           </div>
-          {movieResult.length > 0 && totalResults && !query && (
+          {movieResult.length > 0 && totalResults && (
             <div className="w-full h-10 bg-[#545f6a] rounded-sm py-2.5 px-8 text-[#99aabb]">
               <p className="flex justify-center">
                 There are {Number(totalResults).toLocaleString("en-EN")} films.
@@ -114,29 +103,27 @@ export default function MainPage({ query, setQuery }) {
             </div>
           )}
           <div className="pt-2.5 pb-3.75">
-            {error && <p className="text-center text-red-400">{error}</p>}
-            {loading ? (
+            {moviesError && (
+              <p className="text-center text-red-400">{moviesError}</p>
+            )}
+
+            {movieResult.length > 0 ? (
               <ul className="grid grid-cols-[repeat(auto-fit,minmax(76px,1fr))] gap-4">
-                {Array.from({ length: 20 }).map((_, i) => (
-                  <li
-                    key={i}
-                    className="aspect-2/3 bg-[#2c3440] rounded animate-pulse"
-                  />
-                ))}
-              </ul>
-            ) : (
-              movieResult.length > 0 ?
-              <ul className="grid grid-cols-[repeat(auto-fit,minmax(76px,1fr))] gap-4">
-                {movies.map((movie, i) => {
+                {movieResult.map((movie, i) => {
                   return (
-                    <li key={i} onClick={() => navigate(`/movie/${movie.id}`)} className="group relative cursor-pointer">
+                    <li
+                      key={i}
+                      onClick={() => navigate(`/movie/${movie.id}`)}
+                      className="group relative cursor-pointer h-28.75"
+                    >
                       <img
-                        className="aspect-2/3 object-cover rounded-sm border border-gray-700 
-               transition-opacity duration-200 group-hover:opacity-40"
-                        src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+                        className="w-full h-full object-cover rounded-sm border border-gray-700"
+                        src={`https://image.tmdb.org/t/p/w342${movie.poster_path}`}
                         alt={movie.title}
                         loading="lazy"
                       />
+
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-200 rounded-sm"></div>
 
                       {/* Зелёный outline через псевдоэлемент на li */}
                       <div
@@ -167,35 +154,42 @@ export default function MainPage({ query, setQuery }) {
                     </li>
                   );
                 })}
-              </ul> : <div className="text-center text-base font-bold text-amber-500">Movies not found...</div>
+              </ul>
+            ) : (
+              !moviesLoading &&
+              (!movieResult && (
+                <div className="text-center text-base font-bold text-amber-500">
+                  Movies not found...
+                </div>
+              ))
+            )}
+            {moviesLoading && (
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="w-10 h-10 rounded-full border-3 border-gray-700 border-t-lime-500 animate-spin" />
+              </div>
             )}
           </div>
-
-          {!query && (
-            <>
-              <div className="border-b text-[#7b7f83]"></div>
-              <div
-                className={`flex ${currentGroup > 1 ? "justify-between" : "justify-end"} pt-2.5`}
+          <div className="border-b text-[#7b7f83]"></div>
+          <div
+            className={`flex ${currentGroup > 1 ? "justify-between" : "justify-end"} pt-2.5`}
+          >
+            {currentGroup > 1 && (
+              <button
+                onClick={() => setSearchParams({ page: currentGroup - 1 })}
+                className="bg-[#283038] text-[#99AABB] py-2.25 px-3.75 rounded-sm"
               >
-                {currentGroup > 1 && (
-                  <button
-                    onClick={() => setSearchParams({ page: currentGroup - 1 })}
-                    className="bg-[#283038] text-[#99AABB] py-2.25 px-3.75 rounded-sm"
-                  >
-                    Previous
-                  </button>
-                )}
-                {movieResult.length > 20 && (
-                  <button
-                    onClick={() => setSearchParams({ page: currentGroup + 1 })}
-                    className="bg-[#283038] text-[#99AABB] py-2.25 px-3.75 rounded-sm"
-                  >
-                    Next
-                  </button>
-                )}
-              </div>
-            </>
-          )}
+                Previous
+              </button>
+            )}
+            {movieResult.length > 20 && (
+              <button
+                onClick={() => setSearchParams({ page: currentGroup + 1 })}
+                className="bg-[#283038] text-[#99AABB] py-2.25 px-3.75 rounded-sm"
+              >
+                Next
+              </button>
+            )}
+          </div>
         </div>
       </main>
     </>

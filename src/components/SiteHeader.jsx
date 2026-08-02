@@ -1,5 +1,6 @@
 import { useState } from "react";
 import search from "../icons/search.svg";
+import { useNavigate } from "react-router-dom";
 
 const NAV_ITEMS = [
   "SIGN IN",
@@ -10,8 +11,11 @@ const NAV_ITEMS = [
   "JOURNAL",
 ];
 
-export default function Header({ setQuery, info }) {
+export default function Header({ info }) {
+  const [searchQuery, setSearchQuery] = useState("");
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   return (
     <header
@@ -39,10 +43,13 @@ export default function Header({ setQuery, info }) {
                 </li>
               ))}
               <li>
-                <form className="relative" onSubmit={(e) => e.preventDefault()}>
+                <form className="relative" onSubmit={(e) => {
+                  e.preventDefault();
+                  navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+                }}>
                   <input
-                    onChange={(e) => setQuery(e.target.value)}
-                    className={`${info === "movie" && "group-hover:bg-gray-500 transition duration-400"} w-[clamp(5.625rem,_4.261rem_+_6.82vw,_9.375rem)] h-7.5 bg-[#2c3440] rounded-[15px] outline-none pl-3 text-[#7b7b7b] focus:bg-[#7b7b7b] focus:text-black`}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={`${info === "movie" && "group-hover:bg-gray-500 transition duration-400"} w-[clamp(5.625rem,4.261rem+6.82vw,9.375rem)] h-7.5 bg-[#2c3440] rounded-[15px] outline-none pl-3 text-[#7b7b7b] focus:bg-[#7b7b7b] focus:text-black`}
                     type="text"
                   />
                   <button

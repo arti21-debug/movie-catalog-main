@@ -12,7 +12,7 @@ import Details from "./MovieCredits/Details.jsx";
 import Genres from "./MovieCredits/Genres.jsx";
 import Releases from "./MovieCredits/Releases.jsx";
 
-export default function MoviePage({ setQuery }) {
+export default function MoviePage() {
   const [activeInfo, setActiveInfo] = useState("CAST");
   const [allReviewsShow, setAllReviewsShow] = useState(false);
   const [reviewPage, setReviewPage] = useState(1);
@@ -43,7 +43,7 @@ export default function MoviePage({ setQuery }) {
         >
           <div className="absolute inset-0 bg-linear-to-t from-[#14181C]" />
         </div>
-        <Header setQuery={setQuery} info={"movie"} />
+        <Header info={"movie"} />
       </div>
       <main className="relative -top-8">
         <div className="container flex justify-baseline gap-10">
@@ -167,7 +167,7 @@ export default function MoviePage({ setQuery }) {
                   {!allReviewsShow && movie?.reviews?.results.length > 5 && (
                     <button
                       onClick={() => setAllReviewsShow(true)}
-                      className="mt-8 bg-[#283038] whitespace-nowrap rounded-sm border-t border-white/10 hover:text-gray-200 hover:bg-gray-700"
+                      className="mt-8 bg-[#283038] whitespace-nowrap rounded-sm border-t border-white/10 hover:text-gray-200 hover:bg-gray-700 transition duration-200"
                       style={{
                         padding:
                           "clamp(0.125rem, 0.1rem + 0.125vw, 0.25rem) clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem)",

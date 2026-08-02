@@ -33,7 +33,7 @@ export function useMovies({
         params.set("vote_average.gte", selectedRating.min);
         params.set("vote_count.gte", 100);
       }
-      
+
       const hasFilters =
         selectedGenres.length > 0 ||
         selectedCountries.length > 0 ||
@@ -65,17 +65,38 @@ export function useMovies({
                 ),
               )
             : pages.map((page) =>
-              fetch(`${baseUrl}&page=${page}`, { headers }).then((res) => {
+                fetch(`${baseUrl}&page=${page}`, { headers }).then((res) => {
                   if (!res.ok) throw new Error("Ошибка запроса");
                   return res.json();
                 }),
               );
 
         const moviePages = await Promise.all(requests);
-        const allMovies = moviePages.flatMap((page) => page.results);
+        
+        // Группируем по годам явно через slice
+        // год 0: moviePages[0,1,2], год 1: moviePages[3,4,5] и тд
+        const perYear = Math.floor(60 / (selectedYears.length || 1));
+
+        const allMovies =
+          selectedYears.length > 0
+            ? selectedYears
+                .flatMap(
+                  (_, i) =>
+                    moviePages
+                      .slice(i * 3, i * 3 + 3) // берём 3 страницы этого года
+                      .flatMap((page) => page.results) // объединяем результаты
+                      .slice(0, perYear), // берём нужное количество
+                )
+                .slice(0, 60)
+            : moviePages.flatMap((page) => page.results).slice(0, 60);
+
+        const total = moviePages.reduce(
+          (acc, page) => acc + page.total_results,
+          0,
+        );
 
         setMovieResult(allMovies);
-        setTotalResults(moviePages[0].total_results);
+        setTotalResults(total);
       } catch (err) {
         setError(err.message);
       } finally {

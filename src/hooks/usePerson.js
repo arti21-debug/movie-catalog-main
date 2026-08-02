@@ -12,10 +12,6 @@ export function usePerson({ departmentTitles }) {
 
   const [currDepartment, setCurrDepartment] = useState(department);
 
-  const words = person?.biography.split(" ");
-  const isHide = words?.length > 40
-  const cutedText = person?.biography.split(" ").slice(0, 40).join(" ");
-
   const title = departmentTitles[currDepartment] ?? `FILMS BY`;
   const movies =
     currDepartment === "Acting"
@@ -79,7 +75,5 @@ export function usePerson({ departmentTitles }) {
     movies,
     setCurrDepartment,
     title,
-    isHide,
-    cutedText,
   };
 }

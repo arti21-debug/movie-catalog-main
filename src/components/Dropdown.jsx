@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-
 import chevronDown from "../icons/chevron-down.svg";
 import chevronTop from "../icons/chevron-top.svg";
+import { useDropdown } from "../hooks/useDropdown";
 
 const ratingOptions = [
   { label: "Any", min: null, max: null },
@@ -50,47 +49,14 @@ export default function Dropdown({
   selectedRating,
   onRatingChange,
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [dropList, setDropList] = useState([]);
-  const dropdownRef = useRef(null);
-  const [countryQuery, setCountryQuery] = useState("");
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleOpen = () => {
-    setIsOpen(!isOpen);
-    setCountryQuery("");
-
-    if (dropList.length > 0) return;
-
-    const headers = {
-      Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
-      accept: "application/json",
-    };
-
-    switch (sortType) {
-      case "GENRE":
-        fetch("https://api.themoviedb.org/3/genre/movie/list", { headers })
-          .then((res) => res.json())
-          .then((data) => setDropList(data.genres));
-        break;
-      case "COUNTRY":
-        fetch("https://api.themoviedb.org/3/configuration/countries", {
-          headers,
-        })
-          .then((res) => res.json())
-          .then((data) => setDropList(data));
-        break;
-    }
-  };
+  const {
+    isOpen,
+    dropList,
+    dropdownRef,
+    countryQuery,
+    setCountryQuery,
+    handleOpen,
+  } = useDropdown(sortType);
 
   const handleYearClick = (year) => {
     const newYears = selectedYears.includes(year)
@@ -135,11 +101,13 @@ export default function Dropdown({
       </button>
 
       {isOpen && sortType === "GENRE" && (
+        console.log(dropList),
         <ul
           className="p-1 absolute top-full bg-gray-700 rounded-[5px] z-10 cursor-pointer overflow-y-auto max-h-62.5"
           role="listbox"
         >
           {dropList.map((genre) => {
+            console.log(dropList);
             return (
               <li
                 key={genre.id}
