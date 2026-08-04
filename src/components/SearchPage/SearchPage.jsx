@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
-import { useSearch } from "../hooks/useSearch";
-import Header from "./SiteHeader";
+import { useSearch } from "../../hooks/useSearch";
+import Header from "../SiteHeader";
 import SearchedMovie from "./SearchedMovie";
 
 export default function SearchPage() {
@@ -25,7 +25,7 @@ export default function SearchPage() {
                 <h2 className="text-base font-semibold tracking-wide">
                   SHOWING MATCHES FOR "{query.toUpperCase()}"
                 </h2>
-                <div className="border-b text-[#7b7f83] pt-2"></div>
+                <div className="border-b pt-2 text-[#7b7f83]"></div>
               </div>
             )}
 
@@ -55,18 +55,18 @@ export default function SearchPage() {
                   })}
                 </ul>
               ) : (
-                !searchLoading ||
-                (!searchResult && (
+                !searchLoading &&
+                searchResult.length === 0 && (
                   <div className="text-center text-base font-bold text-amber-500">
                     Movies not found...
                   </div>
-                ))
+                )
               )}
             </div>
             {searchLoading && (
               <div className="relative min-h-20">
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-10 h-10 rounded-full border-3 border-gray-700 border-t-lime-500 animate-spin" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <div className="h-10 w-10 animate-spin rounded-full border-3 border-gray-700 border-t-lime-500" />
                 </div>
               </div>
             )}
@@ -76,7 +76,7 @@ export default function SearchPage() {
                   onClick={() =>
                     setSearchParams({ query, page: currentPage + 1 })
                   }
-                  className="mt-8 bg-[#283038] whitespace-nowrap rounded-sm border-t border-white/10 hover:text-gray-200 hover:bg-gray-700 transition duration-200"
+                  className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"
                   style={{
                     padding:
                       "clamp(0.125rem, 0.1rem + 0.125vw, 0.25rem) clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem)",

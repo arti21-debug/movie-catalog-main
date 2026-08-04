@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useCarousel } from "../hooks/useCarousel";
-import { useSwipe } from "../hooks/useSwipe";
+import { useCarousel } from "../../hooks/useCarousel";
+import { useSwipe } from "../../hooks/useSwipe";
 
 export default function Carousel({ movie }) {
   const [currImgIndex, setCurrImgIndex] = useState(0);
@@ -47,7 +47,7 @@ export default function Carousel({ movie }) {
           }}
         >
           {slides.map((slide, index) => (
-            <div key={index} className="w-full shrink-0 grid grid-cols-2 gap-2">
+            <div key={index} className="grid w-full shrink-0 grid-cols-2 gap-2">
               {slide.map((img) => (
                 <div key={img.file_path}>
                   <button
@@ -60,7 +60,7 @@ export default function Carousel({ movie }) {
                     <img
                       src={`https://image.tmdb.org/t/p/original${img.file_path}`}
                       alt=""
-                      className="w-full h-full object-cover rounded-xl"
+                      className="h-full w-full rounded-xl object-cover"
                     />
                   </button>
                 </div>
@@ -75,7 +75,7 @@ export default function Carousel({ movie }) {
               prev === 0 ? slides.length - 1 : prev - 1,
             )
           }
-          className="absolute left-2 top-1/2 -translate-y-1/2"
+          className="absolute top-1/2 left-2 -translate-y-1/2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +98,7 @@ export default function Carousel({ movie }) {
               prev === slides.length - 1 ? 0 : prev + 1,
             )
           }
-          className="absolute right-2 top-1/2 -translate-y-1/2"
+          className="absolute top-1/2 right-2 -translate-y-1/2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -116,13 +116,12 @@ export default function Carousel({ movie }) {
           </svg>
         </button>
       </div>
-      <div className="flex mt-3 justify-center gap-2">
+      <div className="mt-3 flex justify-center gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrImgIndex(index)}
-            className={`h-1.5 rounded-full transition-all duration-300
-          ${currImgIndex === index ? "w-6 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80"}`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${currImgIndex === index ? "w-6 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80"}`}
           />
         ))}
       </div>
@@ -132,15 +131,15 @@ export default function Carousel({ movie }) {
             setLoading(false);
             setIsOpen(false);
           }}
-          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-[90%] max-w-5xl aspect-video"
+            className="relative aspect-video w-[90%] max-w-5xl"
           >
             {loading && (
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                <div className="w-10 h-10 rounded-full border-3 border-gray-700 border-t-lime-500 animate-spin" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="h-10 w-10 animate-spin rounded-full border-3 border-gray-700 border-t-lime-500" />
               </div>
             )}
             {!loading && (
@@ -149,7 +148,7 @@ export default function Carousel({ movie }) {
                   setLoading(false);
                   setIsOpen(false);
                 }}
-                className="absolute top-1 right-3 text-xl hover:text-red-700 transition duration-200"
+                className="absolute top-1 right-3 text-xl transition duration-200 hover:text-red-700"
               >
                 X
               </button>
@@ -158,7 +157,7 @@ export default function Carousel({ movie }) {
               onLoad={() => setLoading(false)}
               src={`https://image.tmdb.org/t/p/original${currImg}`}
               alt=""
-              className="w-full h-full object-cover rounded-xl"
+              className="h-full w-full rounded-xl object-cover"
             />
           </div>
         </div>

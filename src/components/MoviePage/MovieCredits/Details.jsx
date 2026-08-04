@@ -1,7 +1,7 @@
 export default function Details({ movie }) {
   return (
-    <div className="flex flex-col gap-4 mt-4">
-      <div className="flex flex-wrap gap-4 items-center">
+    <div className="mt-4 flex flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <div className="font-sans font-bold">STUDIOS:</div>
         <div className="flex flex-wrap gap-2">
           {movie?.production_companies?.map((comp) => (
@@ -11,7 +11,7 @@ export default function Details({ movie }) {
           ))}
         </div>
       </div>
-      <div className="flex flex-wrap gap-4 items-center">
+      <div className="flex flex-wrap items-center gap-4">
         <div className="font-sans font-bold">COUNTRY:</div>
         <div className="flex flex-wrap gap-2">
           {movie?.production_countries?.map((ctry) => (
@@ -21,7 +21,7 @@ export default function Details({ movie }) {
           ))}
         </div>
       </div>
-      <div className="flex flex-wrap gap-4 items-center">
+      <div className="flex flex-wrap items-center gap-4">
         <div className="font-sans font-bold">LANGUAGE:</div>
         <div className="flex flex-wrap gap-2">
           {movie?.spoken_languages?.map((lang) => (
@@ -32,7 +32,7 @@ export default function Details({ movie }) {
         </div>
       </div>
       {movie?.budget > 0 && (
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="font-sans font-bold">BUDGET:</div>
           <div className="grey-button">
             {movie?.budget.toLocaleString("en-US")}$

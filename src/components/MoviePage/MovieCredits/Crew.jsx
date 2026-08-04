@@ -14,7 +14,7 @@ export default function Crew({ movie }) {
       {uniqueDepartments.map((department, i) => (
         <div
           key={department}
-          className={`flex items-center flex-wrap gap-3 ${i === 0 ? "mt-4" : "mt-8"}`}
+          className={`flex flex-wrap items-center gap-3 ${i === 0 ? "mt-4" : "mt-8"}`}
         >
           <div className="font-sans font-bold">{department.toUpperCase()}:</div>
           <div className="flex flex-wrap gap-x-1 gap-y-2">
@@ -22,7 +22,9 @@ export default function Crew({ movie }) {
               .filter((p) => p.department === department)
               .map((p) => (
                 <button
-                onClick={() => navigate(`/person/${p.id}?department=${p.department}`)}
+                  onClick={() =>
+                    navigate(`/person/${p.id}?department=${p.department}`)
+                  }
                   key={p.credit_id || p.id}
                   className="grey-button"
                 >

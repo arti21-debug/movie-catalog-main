@@ -3,28 +3,30 @@ import { persist } from "zustand/middleware";
 
 export const useWatchlistStore = create(
   persist(
-    (set, get) => ({
+    (set, _) => ({
       watchlist: [],
 
       addMovie: (movie, status) =>
-        set((state) => ({
-          watchlist: [...state.watchlist, { ...movie, status }],
-        })),
+        set((state) => {
+          const exists = state.watchlist.find((m) => m.id === movie.id);
+
+          if (exists) {
+            return {
+              watchlist: state.watchlist.map((m) =>
+                m.id === movie.id ? { ...m, status } : m,
+              ),
+            };
+          }
+
+          return {
+            watchlist: [...state.watchlist, { ...movie, status }],
+          };
+        }),
 
       removeMovie: (id) =>
         set((state) => ({
           watchlist: state.watchlist.filter((m) => m.id !== id),
         })),
-
-      changeStatus: (id, status) =>
-        set((state) => ({
-          watchlist: state.watchlist.map((m) =>
-            m.id === id ? { ...m, status } : m,
-          ),
-        })),
-
-      getStatus: (id) =>
-        get().watchlist.find((m) => m.id === id)?.status ?? null,
     }),
     { name: "watchlist" },
   ),

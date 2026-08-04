@@ -22,7 +22,7 @@ export default function PersonData({ person }) {
             {cutedText}{" "}
             <button
               onClick={() => setIsBioHidden(false)}
-              className="mt-1 ml-1 px-2 py-0 bg-[#283038] rounded-sm text-sm border-white/10 hover:text-gray-200 hover:bg-gray-700"
+              className="mt-1 ml-1 rounded-sm border-white/10 bg-[#283038] px-2 py-0 text-sm hover:bg-gray-700 hover:text-gray-200"
               aria-label="show full review"
             >
               •••

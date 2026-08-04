@@ -1,5 +1,5 @@
-import Header from "./SiteHeader.jsx";
-import { useMovie } from "../hooks/useMovie.js";
+import Header from "../SiteHeader.jsx";
+import { useMovie } from "../../hooks/useMovie.js";
 import { useState } from "react";
 import Trailer from "./TrailerModal.jsx";
 import Carousel from "./Carousel.jsx";
@@ -11,6 +11,7 @@ import Crew from "./MovieCredits/Crew.jsx";
 import Details from "./MovieCredits/Details.jsx";
 import Genres from "./MovieCredits/Genres.jsx";
 import Releases from "./MovieCredits/Releases.jsx";
+import RatingSection from "./RatingSection.jsx";
 
 export default function MoviePage() {
   const [activeInfo, setActiveInfo] = useState("CAST");
@@ -33,10 +34,9 @@ export default function MoviePage() {
 
   return (
     <div className="bg-[#14181C] text-[#99AABB]">
-      {console.log(movie)}
       <div className="relative h-140 max-[600px]:h-80">
         <div
-          className="absolute inset-0 bg-cover bg-center h-full"
+          className="absolute inset-0 h-full bg-cover bg-center"
           style={{
             backgroundImage: `url(https://image.tmdb.org/t/p/original${movie?.backdrop_path})`,
           }}
@@ -46,7 +46,7 @@ export default function MoviePage() {
         <Header info={"movie"} />
       </div>
       <main className="relative -top-8">
-        <div className="container flex justify-baseline gap-10">
+        <div className="container flex justify-center gap-10">
           <div className="max-[600px]:hidden">
             <PosterSection
               movie={movie}
@@ -55,7 +55,7 @@ export default function MoviePage() {
             <Trailer trailerKey={trailerKey} trailerName={trailerName} />
           </div>
 
-          <div className="max-w-167.5">
+          <div className="flex flex-col items-center max-w-167.5">
             <div className="flex items-start gap-8">
               <div className="hidden max-[600px]:block">
                 <PosterSection
@@ -64,8 +64,8 @@ export default function MoviePage() {
                 />
                 <Trailer trailerKey={trailerKey} trailerName={trailerName} />
               </div>
-              <div className="flex flex-col gap-3 max-w-97.5">
-                <h2 className="font-serifTitle font-bold text-[clamp(1.625rem,1.4643rem+0.7143vw,2rem)] text-white">
+              <div className="flex max-w-97.5 flex-col gap-3">
+                <h2 className="font-serifTitle text-[clamp(1.625rem,1.4643rem+0.7143vw,2rem)] font-bold text-white">
                   {movie?.title}
                 </h2>
                 <div className="flex flex-col gap-8">
@@ -79,7 +79,7 @@ export default function MoviePage() {
                     {movie?.origin_country?.map((c, index) => (
                       <span
                         key={index}
-                        className="text-[#DDEEFF] text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)]"
+                        className="text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)] text-[#DDEEFF]"
                       >
                         {c}
                         {index === movie?.origin_country.length - 1 ? "" : ", "}
@@ -91,40 +91,18 @@ export default function MoviePage() {
                 <p className="font-text text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)]">
                   {movie?.overview}
                 </p>
+                <div className="hidden max-[880px]:block max-[880px]:m-8 max-[550px]:hidden">
+                  <RatingSection movie={movie} info={"adapt"} />
+                </div>
               </div>
-              <div className="font-sans flex flex-col items-center max-[880px]:hidden">
-                <div className="flex items-center gap-20">
-                  <h3 className="text-sm">RATINGS</h3>
-                  <p className="text-xs text-nowrap">
-                    {movie?.vote_count} FANS
-                  </p>
-                </div>
-                <div className="pt-1 border-b w-full"></div>
-                <div className="pt-3 flex justify-center text-xl">
-                  {movie?.vote_average?.toFixed(1)}
-                </div>
-
-                <div className="relative inline-block w-fit">
-                  {/* Серые звёзды — фон */}
-                  <span className="text-gray-500 text-xl tracking-wider">
-                    ★★★★★
-                  </span>
-
-                  {/* div обрезает, внутри жёлтые звёзды */}
-                  <div
-                    className="absolute top-0 left-0 overflow-hidden"
-                    style={{
-                      width: `${((movie?.vote_average ?? 0) / 10) * 100}%`,
-                    }}
-                  >
-                    <span className="text-yellow-400 text-xl tracking-wider whitespace-nowrap">
-                      ★★★★★
-                    </span>
-                  </div>
-                </div>
+              <div className="max-[880px]:hidden">
+                <RatingSection movie={movie} info={"adapt"} />
               </div>
             </div>
             <div className="font-inter w-[clamp(18.75rem, 16.705rem + 10.23vw, 24.375rem)] max-w-97.5">
+              <div className="hidden max-[550px]:block max-[550px]:m-10">
+                <RatingSection movie={movie} info={"main"} />
+              </div>
               <header className="flex flex-wrap gap-5 pt-10">
                 {["CAST", "CREW", "DETAILS", "GENRES", "RELEASES"].map((s) => (
                   <button
@@ -135,9 +113,9 @@ export default function MoviePage() {
                     {s}
 
                     {activeInfo === s && (
-                      <span className="absolute bottom-0 left-0 w-full h-px bg-white" />
+                      <span className="absolute bottom-0 left-0 h-px w-full bg-white" />
                     )}
-                    <div className="pt-1 border-b text-[#283038]"></div>
+                    <div className="border-b pt-1 text-[#283038]"></div>
                   </button>
                 ))}
               </header>
@@ -167,7 +145,7 @@ export default function MoviePage() {
                   {!allReviewsShow && movie?.reviews?.results.length > 5 && (
                     <button
                       onClick={() => setAllReviewsShow(true)}
-                      className="mt-8 bg-[#283038] whitespace-nowrap rounded-sm border-t border-white/10 hover:text-gray-200 hover:bg-gray-700 transition duration-200"
+                      className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"
                       style={{
                         padding:
                           "clamp(0.125rem, 0.1rem + 0.125vw, 0.25rem) clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem)",
@@ -180,7 +158,7 @@ export default function MoviePage() {
                   {allReviewsShow && (
                     <button
                       onClick={() => setAllReviewsShow(false)}
-                      className="mt-8 bg-[#283038] whitespace-nowrap rounded-sm border-t border-white/10 hover:text-gray-200 hover:bg-gray-700"
+                      className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap hover:bg-gray-700 hover:text-gray-200"
                       style={{
                         padding:
                           "clamp(0.125rem, 0.1rem + 0.125vw, 0.25rem) clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem)",
@@ -191,12 +169,12 @@ export default function MoviePage() {
                     </button>
                   )}
                 </div>
-                <div className="flex justify-center gap-3 mt-6">
+                <div className="mt-6 flex justify-center gap-3">
                   {reviewsPages.map((page) => (
                     <button
                       key={page}
                       onClick={() => setReviewPage(page)}
-                      className="px-1.5 bg-[#283038] whitespace-nowrap rounded-sm border-t border-white/10 hover:text-gray-200 hover:bg-gray-700"
+                      className="rounded-sm border-t border-white/10 bg-[#283038] px-1.5 whitespace-nowrap hover:bg-gray-700 hover:text-gray-200"
                     >
                       {page}
                     </button>
@@ -217,7 +195,7 @@ export default function MoviePage() {
                       onClick={() => navigate(`/movie/${film.id}`)}
                     >
                       <img
-                        className="w-full aspect-2/3 rounded-sm border border-gray-700 hover:border-gray-300 transition duration-500"
+                        className="aspect-2/3 w-full rounded-sm border border-gray-700 transition duration-500 hover:border-gray-300"
                         src={`https://image.tmdb.org/t/p/w342${film.poster_path}`}
                         alt={film.title}
                         loading="lazy"

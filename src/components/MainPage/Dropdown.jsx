@@ -1,6 +1,6 @@
-import chevronDown from "../icons/chevron-down.svg";
-import chevronTop from "../icons/chevron-top.svg";
-import { useDropdown } from "../hooks/useDropdown";
+import chevronDown from "@/icons/chevron-down.svg";
+import chevronTop from "@/icons/chevron-top.svg";
+import { useDropdown } from "@/hooks/useDropdown";
 
 const ratingOptions = [
   { label: "Any", min: null, max: null },
@@ -101,17 +101,15 @@ export default function Dropdown({
       </button>
 
       {isOpen && sortType === "GENRE" && (
-        console.log(dropList),
         <ul
-          className="p-1 absolute top-full bg-gray-700 rounded-[5px] z-10 cursor-pointer overflow-y-auto max-h-62.5"
+          className="absolute top-full z-10 max-h-62.5 cursor-pointer overflow-y-auto rounded-[5px] bg-gray-700 p-1"
           role="listbox"
         >
           {dropList.map((genre) => {
-            console.log(dropList);
             return (
               <li
                 key={genre.id}
-                className="py-0.5 px-4 text-nowrap hover:bg-gray-800 hover:text-emerald-600"
+                className="px-4 py-0.5 text-nowrap hover:bg-gray-800 hover:text-emerald-600"
                 onClick={() => handleGenreClick(genre.id)}
                 role="option"
                 aria-selected={selectedGenres.includes(genre.id)}
@@ -127,24 +125,24 @@ export default function Dropdown({
       )}
 
       {isOpen && sortType === "COUNTRY" && (
-        <ul className="p-1 absolute top-full bg-gray-700 rounded-[5px] z-10 cursor-pointer overflow-y-auto max-h-62.5">
-          <li className="py-0.5 px-4 text-black text-xs">
+        <ul className="absolute top-full z-10 max-h-62.5 cursor-pointer overflow-y-auto rounded-[5px] bg-gray-700 p-1">
+          <li className="px-4 py-0.5 text-xs text-black">
             {
               <input
                 onChange={(e) => setCountryQuery(e.target.value)}
                 type="text"
-                className="bg-gray-400 text-black px-1 rounded-sm py-0.5"
+                className="rounded-sm bg-gray-400 px-1 py-0.5 text-black"
                 placeholder="search country..."
               />
             }
           </li>
-          <li className="py-0.5 px-4 cursor-auto font-semibold text-amber-500 pb-2">
+          <li className="cursor-auto px-4 py-0.5 pb-2 font-semibold text-amber-500">
             {selectedCountries.length > 0 && "Selected Countries:"}
             {selectedCountries.map((ctry) => (
               <div key={ctry}>{ctry}</div>
             ))}
           </li>
-          <li className="py-0.5 px-4 cursor-auto font-semibold text-emerald-600 pb-2">
+          <li className="cursor-auto px-4 py-0.5 pb-2 font-semibold text-emerald-600">
             {countryQuery === "" ? "Popular:" : "Search results:"}
           </li>
           {(countryQuery === ""
@@ -168,7 +166,7 @@ export default function Dropdown({
             <li
               key={ctry.id}
               onClick={() => handleCountryClick(ctry.iso)}
-              className="py-0.5 px-4 hover:bg-gray-800 hover:text-emerald-600"
+              className="px-4 py-0.5 hover:bg-gray-800 hover:text-emerald-600"
               role="option"
             >
               {selectedCountries.includes(ctry.iso) && (
@@ -181,12 +179,12 @@ export default function Dropdown({
       )}
 
       {isOpen && sortType === "RUNTIME" && (
-        <ul className="p-1 absolute top-full bg-gray-700 rounded-[5px] z-10 cursor-pointer overflow-y-auto max-h-62.5">
+        <ul className="absolute top-full z-10 max-h-62.5 cursor-pointer overflow-y-auto rounded-[5px] bg-gray-700 p-1">
           {runtimeOptions.map((time) => (
             <li
               key={time.label}
               onClick={() => onRuntimeChange(time)}
-              className={`py-0.5 px-4 hover:bg-gray-800 hover:text-emerald-600 text-nowrap ${selectedRuntime.label === time.label && "text-emerald-500 font-semibold"}`}
+              className={`px-4 py-0.5 text-nowrap hover:bg-gray-800 hover:text-emerald-600 ${selectedRuntime.label === time.label && "font-semibold text-emerald-500"}`}
             >
               {time.label}
             </li>
@@ -195,12 +193,12 @@ export default function Dropdown({
       )}
 
       {isOpen && sortType === "Find by year" && (
-        <ul className="p-1 absolute top-full bg-gray-700 rounded-[5px] z-10 cursor-pointer overflow-y-auto max-h-62.5">
+        <ul className="absolute top-full z-10 max-h-62.5 cursor-pointer overflow-y-auto rounded-[5px] bg-gray-700 p-1">
           {years.map((year) => (
             <li
               key={year}
               onClick={() => handleYearClick(year)}
-              className={`py-0.5 px-4 hover:bg-gray-800 hover:text-emerald-600 text-nowrap ${selectedYears.includes(year) && "text-emerald-500 font-semibold"}`}
+              className={`px-4 py-0.5 text-nowrap hover:bg-gray-800 hover:text-emerald-600 ${selectedYears.includes(year) && "font-semibold text-emerald-500"}`}
             >
               {year}
             </li>
@@ -209,12 +207,12 @@ export default function Dropdown({
       )}
 
       {isOpen && sortType === "Find by rating" && (
-        <ul className="p-1 absolute top-full bg-gray-700 rounded-[5px] z-10 cursor-pointer overflow-y-auto max-h-62.5">
+        <ul className="absolute top-full z-10 max-h-62.5 cursor-pointer overflow-y-auto rounded-[5px] bg-gray-700 p-1">
           {ratingOptions.map((rat) => (
             <li
               key={rat.label}
               onClick={() => onRatingChange(rat)}
-              className={`py-0.5 px-4 hover:bg-gray-800 hover:text-emerald-600 text-nowrap ${selectedRating.label === rat.label && "text-emerald-500 font-semibold"}`}
+              className={`px-4 py-0.5 text-nowrap hover:bg-gray-800 hover:text-emerald-600 ${selectedRating.label === rat.label && "font-semibold text-emerald-500"}`}
             >
               {rat.label}
             </li>

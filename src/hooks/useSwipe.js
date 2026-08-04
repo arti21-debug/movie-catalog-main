@@ -20,7 +20,7 @@ export function useSwipe({ onSwipeLeft, onSwipeRight }) {
     }
 
     touchStartX.current = null;
-  }
+  };
 
   return { handleTouchStart, handleTouchEnd };
 }

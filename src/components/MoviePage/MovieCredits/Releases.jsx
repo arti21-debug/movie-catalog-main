@@ -9,9 +9,13 @@ export default function Releases({ movie }) {
             <div className="flex justify-between">
               <div>{ctry.release_dates[0].release_date.slice(0, 10)}</div>
               <div>{ctry.iso_3166_1}</div>
-              <img className="w-6 h-6 object-cover rounded-full" src={`https://flagcdn.com/w40/${ctry.iso_3166_1.toLowerCase()}.png`} alt="" />
+              <img
+                className="h-6 w-6 rounded-full object-cover"
+                src={`https://flagcdn.com/w40/${ctry.iso_3166_1.toLowerCase()}.png`}
+                alt=""
+              />
             </div>
-            <div className="w-full mt-1 border-b text-[#283038]"></div>
+            <div className="mt-1 w-full border-b text-[#283038]"></div>
           </div>
         ))}
       </div>

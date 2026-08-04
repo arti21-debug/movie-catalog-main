@@ -72,7 +72,7 @@ export function useMovies({
               );
 
         const moviePages = await Promise.all(requests);
-        
+
         // Группируем по годам явно через slice
         // год 0: moviePages[0,1,2], год 1: moviePages[3,4,5] и тд
         const perYear = Math.floor(60 / (selectedYears.length || 1));

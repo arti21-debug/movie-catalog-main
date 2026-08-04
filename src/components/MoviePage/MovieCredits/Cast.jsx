@@ -12,9 +12,9 @@ export default function Cast({ movie }) {
     : (castFirstPart ?? []);
 
   return (
-    <div className="flex flex-wrap gap-x-1 gap-y-2 mt-4">
+    <div className="mt-4 flex flex-wrap gap-x-1 gap-y-2">
       {cast.map((actor) => (
-        <div key={actor.id} className="relative group">
+        <div key={actor.id} className="group relative">
           <button
             onClick={() =>
               navigate(
@@ -25,7 +25,7 @@ export default function Cast({ movie }) {
           >
             {actor.name}
           </button>
-          <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1 bottom-full hidden group-hover:block px-3 py-1 bg-[#1a2230] border border-white/10 rounded-sm text-white text-xs whitespace-nowrap">
+          <div className="absolute bottom-full left-1/2 hidden -translate-x-1/2 -translate-y-1 rounded-sm border border-white/10 bg-[#1a2230] px-3 py-1 text-xs whitespace-nowrap text-white group-hover:block">
             {actor.character}
           </div>
         </div>

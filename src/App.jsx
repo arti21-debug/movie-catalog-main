@@ -1,20 +1,19 @@
 import { Routes, Route } from "react-router-dom";
-import MainPage from "./components/MainPage";
-import MoviePage from "./components/MoviePage";
+import MainPage from "./components/MainPage/MainPage.jsx";
+import MoviePage from "./components/MoviePage/MoviePage.jsx";
 import "./main.css";
-import PersonPage from "./components/PersonPage";
-import SearchPage from "./components/SearchPage";
+import PersonPage from "./components/PersonPage/PersonPage.jsx";
+import SearchPage from "./components/SearchPage/SearchPage.jsx";
+import WatchlistPage from "./components/WatchlistPage/WatchlistPage.jsx";
 
 export default function App() {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={<MainPage />}
-      />
+      <Route path="/" element={<MainPage />} />
       <Route path="/movie/:id" element={<MoviePage />} />
       <Route path="/person/:id" element={<PersonPage />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/watchlist" element={<WatchlistPage />} />
     </Routes>
   );
 }

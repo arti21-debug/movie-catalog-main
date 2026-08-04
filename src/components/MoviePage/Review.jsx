@@ -4,22 +4,22 @@ export function Review({ user }) {
   const [isStatusHidden, setIsStatusHidden] = useState(true);
 
   const words = user.content.split(" ");
-  const isHide = words.length > 50
+  const isHide = words.length > 50;
   const cutedText = user.content.split(" ").slice(0, 50).join(" ");
 
   return (
     <div className="flex gap-6">
       <div>
         {user.author_details.avatar_path ? (
-          <div className="w-12 h-12">
+          <div className="h-12 w-12">
             <img
               src={`https://image.tmdb.org/t/p/original${user.author_details.avatar_path}`}
               alt=""
-              className="w-12 h-12 rounded-full object-cover border"
+              className="h-12 w-12 rounded-full border object-cover"
             />
           </div>
         ) : (
-          <div className="w-12 h-12 rounded-full bg-zinc-700 border">
+          <div className="h-12 w-12 rounded-full border bg-zinc-700">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -40,15 +40,17 @@ export function Review({ user }) {
       <div className="flex flex-col gap-6">
         <div>
           Review by{" "}
-          <span className="text-[#AABBCC] font-extrabold">{user.author}</span>
+          <span className="font-extrabold text-[#AABBCC]">{user.author}</span>
         </div>
         <div className="font-text text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)] text-[#AABBCC]">
           {isHide ? (
             <div>
               {isStatusHidden ? cutedText : <p>{user.content}</p>}{" "}
               <button
-                onClick={() => setIsStatusHidden(prev => prev ? false : true)}
-                className="ml-1 px-2 py-0 bg-[#283038] rounded-sm text-sm border-white/10 hover:text-gray-200 hover:bg-gray-700"
+                onClick={() =>
+                  setIsStatusHidden((prev) => (prev ? false : true))
+                }
+                className="ml-1 rounded-sm border-white/10 bg-[#283038] px-2 py-0 text-sm hover:bg-gray-700 hover:text-gray-200"
                 aria-label="show full review"
               >
                 •••
@@ -58,7 +60,7 @@ export function Review({ user }) {
             <p>{user.content}</p>
           )}
         </div>
-      <div>{user.updated_at?.slice(0, 10)}</div>
+        <div>{user.updated_at?.slice(0, 10)}</div>
       </div>
     </div>
   );
