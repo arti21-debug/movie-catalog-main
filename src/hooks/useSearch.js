@@ -8,6 +8,12 @@ export function useSearch(query, currentPage) {
   const queryRef = useRef(null);
 
   useEffect(() => {
+    if (query) {
+      document.title = `Search: ${query} — Filmbox`;
+    }
+  }, [query]);
+
+  useEffect(() => {
     const headers = {
       Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
       accept: "application/json",

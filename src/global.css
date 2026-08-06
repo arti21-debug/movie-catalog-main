@@ -1,5 +1,3 @@
-@import "tailwindcss";
-
 @theme {
   --font-inter: "Inter", sans-serif;
   --text-13: 13px;
@@ -8,15 +6,6 @@
 .container {
   width: min(100% - 40px, 950px);
   margin: 0 auto;
-}
-
-.logo {
-  width: clamp(9.375rem, 6.58rem + 13.98vw, 17.063rem);
-  height: 55px;
-  background-image: url("https://a.ltrbxd.com/logos/letterboxd-logo-h-neg-rgb.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
 }
 
 .grey-button {

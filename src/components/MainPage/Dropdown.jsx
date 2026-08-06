@@ -52,6 +52,8 @@ export default function Dropdown({
   const {
     isOpen,
     dropList,
+    loading,
+    error,
     dropdownRef,
     countryQuery,
     setCountryQuery,
@@ -83,7 +85,7 @@ export default function Dropdown({
   };
 
   return (
-    <header className="relative" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={handleOpen}
         className={"flex items-center gap-2"}
@@ -105,7 +107,9 @@ export default function Dropdown({
           className="absolute top-full z-10 max-h-62.5 cursor-pointer overflow-y-auto rounded-[5px] bg-gray-700 p-1"
           role="listbox"
         >
-          {dropList.map((genre) => {
+          {loading && <li className="px-4 py-2 text-gray-400">Loading...</li>}
+          {error && <li className="px-4 py-2 text-red-400">{error}</li>}
+          {!loading && !error && dropList.map((genre) => {
             return (
               <li
                 key={genre.id}
@@ -219,6 +223,6 @@ export default function Dropdown({
           ))}
         </ul>
       )}
-    </header>
+    </div>
   );
 }

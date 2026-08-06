@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useCarousel } from "../../hooks/useCarousel";
+import { getCarouselSlides } from "../../../utilits/getCarouselSlides";
 import { useSwipe } from "../../hooks/useSwipe";
 
 export default function Carousel({ movie }) {
@@ -16,7 +16,7 @@ export default function Carousel({ movie }) {
     };
   }, [isOpen]);
 
-  const { slides } = useCarousel({ movie });
+  const { slides } = getCarouselSlides({ movie });
 
   const { handleTouchStart, handleTouchEnd } = useSwipe({
     onSwipeLeft: () =>
@@ -58,7 +58,7 @@ export default function Carousel({ movie }) {
                     }}
                   >
                     <img
-                      src={`https://image.tmdb.org/t/p/original${img.file_path}`}
+                      src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
                       alt=""
                       className="h-full w-full rounded-xl object-cover"
                     />
@@ -155,7 +155,7 @@ export default function Carousel({ movie }) {
             )}
             <img
               onLoad={() => setLoading(false)}
-              src={`https://image.tmdb.org/t/p/original${currImg}`}
+              src={`https://image.tmdb.org/t/p/w1280${currImg}`}
               alt=""
               className="h-full w-full rounded-xl object-cover"
             />

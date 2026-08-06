@@ -5,8 +5,15 @@ export function useMovie({ allReviewsShow, reviewPage }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [movie, setMovie] = useState(null);
+  console.log(movie);
 
   const { id } = useParams();
+
+  useEffect(() => {
+    if (movie?.title && movie?.release_date) {
+      document.title = `${movie.title} (${movie.release_date.slice(0, 4)}) — Filmbox`;
+    }
+  }, [movie?.title, movie?.release_date]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

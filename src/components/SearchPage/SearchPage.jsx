@@ -35,7 +35,7 @@ export default function SearchPage() {
               )}
               {searchResult.length > 0 ? (
                 <ul className="flex flex-col gap-4">
-                  {searchResult.map((movie, i) => {
+                  {searchResult.map((movie) => {
                     const words = movie?.overview?.split(" ");
                     const isHide = words?.length > 50;
                     const cutedText = movie?.overview
@@ -44,7 +44,7 @@ export default function SearchPage() {
                       .join(" ");
 
                     return (
-                      <li key={i}>
+                      <li key={movie.id}>
                         <SearchedMovie
                           movie={movie}
                           isHide={isHide}

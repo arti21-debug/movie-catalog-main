@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Movie from "../Movie";
 import { Check, Heart, X } from "lucide-react";
@@ -12,6 +12,10 @@ export default function WatchlistMovie({
   const [isOverviewHidden, setIsOverviewHidden] = useState(true);
   const navigate = useNavigate();
   const status = watchlist.find((m) => m.id === movie.id).status ?? null;
+
+  useEffect(() => {
+    document.title = "My Watchlist — Filmbox";
+  }, []);
 
   return (
     <>
@@ -56,7 +60,9 @@ export default function WatchlistMovie({
               <span className="pointer-events-none absolute bottom-full left-1/2 mb-1 -translate-x-1/2 rounded bg-gray-950/80 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                 {status === "want"
                   ? "Liked"
-                  : status[0].toUpperCase() + status.slice(1)}
+                  : status
+                    ? status[0].toUpperCase() + status.slice(1)
+                    : ""}
               </span>
             </div>
           </div>

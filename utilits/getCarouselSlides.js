@@ -1,4 +1,4 @@
-export function useCarousel({ movie }) {
+export function getCarouselSlides({ movie }) {
   const firstBackdrops =
     movie?.images?.backdrops.filter((img, i) => i <= 10) ?? [];
 

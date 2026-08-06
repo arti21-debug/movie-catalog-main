@@ -1,10 +1,19 @@
+import { useFiltersStore } from "@/store/useFiltersStore";
 import { useEffect, useRef, useState } from "react";
 
 export function useDropdown(sortType) {
   const [isOpen, setIsOpen] = useState(false);
-  const [dropList, setDropList] = useState([]);
-  const dropdownRef = useRef(null);
   const [countryQuery, setCountryQuery] = useState("");
+  const dropdownRef = useRef(null);
+
+  const genres = useFiltersStore((state) => state.genres);
+  const countries = useFiltersStore((state) => state.countries);
+  const genresLoading = useFiltersStore((state) => state.genresLoading);
+  const countriesLoading = useFiltersStore((state) => state.countriesLoading);
+  const genresError = useFiltersStore((state) => state.genresError);
+  const countriesError = useFiltersStore((state) => state.countriesError);
+  const fetchGenres = useFiltersStore((state) => state.fetchGenres);
+  const fetchCountries = useFiltersStore((state) => state.fetchCountries);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -20,32 +29,19 @@ export function useDropdown(sortType) {
     setIsOpen(!isOpen);
     setCountryQuery("");
 
-    if (dropList.length > 0) return;
-
-    const headers = {
-      Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
-      accept: "application/json",
-    };
-
-    switch (sortType) {
-      case "GENRE":
-        fetch("https://api.themoviedb.org/3/genre/movie/list", { headers })
-          .then((res) => res.json())
-          .then((data) => setDropList(data.genres));
-        break;
-      case "COUNTRY":
-        fetch("https://api.themoviedb.org/3/configuration/countries", {
-          headers,
-        })
-          .then((res) => res.json())
-          .then((data) => setDropList(data));
-        break;
-    }
+    if (sortType === "GENRE") fetchGenres();
+    if (sortType === "COUNTRY") fetchCountries();
   };
+
+  const dropList = sortType === "GENRE" ? genres : countries;
+  const loading = sortType === "GENRE" ? genresLoading : countriesLoading;
+  const error = sortType === "GENRE" ? genresError : countriesError;
 
   return {
     isOpen,
     dropList,
+    loading,
+    error,
     dropdownRef,
     countryQuery,
     setCountryQuery,

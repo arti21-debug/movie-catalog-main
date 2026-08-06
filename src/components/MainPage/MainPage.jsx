@@ -40,6 +40,8 @@ export default function MainPage() {
     selectedRating,
   });
 
+  const uniqueMovies = [...new Map(movieResult.map((m) => [m.id, m])).values()];
+
   const handleRatingChange = (rating) => {
     setSelectedRating(rating);
     setSearchParams({ page: 1 });
@@ -110,10 +112,10 @@ export default function MainPage() {
 
             {movieResult.length > 0 ? (
               <ul className="grid grid-cols-[repeat(auto-fit,minmax(70px,1fr))] gap-4">
-                {movieResult.map((movie, i) => {
+                {uniqueMovies.map((movie) => {
                   return (
                     <li
-                      key={i}
+                      key={movie.id}
                       onClick={() => navigate(`/movie/${movie.id}`)}
                       className="group relative h-28.75 cursor-pointer"
                     >
@@ -124,7 +126,7 @@ export default function MainPage() {
               </ul>
             ) : (
               !moviesLoading &&
-              !movieResult && (
+              movieResult.length === 0 && (
                 <div className="text-center text-base font-bold text-amber-500">
                   Movies not found...
                 </div>

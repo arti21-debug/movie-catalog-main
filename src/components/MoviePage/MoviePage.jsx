@@ -32,13 +32,29 @@ export default function MoviePage() {
     firstSimilar,
   } = useMovie({ allReviewsShow, reviewPage });
 
+  if (movieLoading)
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#14181C]">
+        <div className="h-10 w-10 animate-spin rounded-full border-3 border-gray-700 border-t-lime-500" />
+      </div>
+    );
+
+  if (movieError)
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#14181C] text-red-400">
+        {movieError}
+      </div>
+    );
+
   return (
     <div className="bg-[#14181C] text-[#99AABB]">
       <div className="relative h-140 max-[600px]:h-80">
         <div
           className="absolute inset-0 h-full bg-cover bg-center"
           style={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/original${movie?.backdrop_path})`,
+            backgroundImage: movie.backdrop_path
+              ? `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`
+              : "none",
           }}
         >
           <div className="absolute inset-0 bg-linear-to-t from-[#14181C]" />
@@ -55,7 +71,7 @@ export default function MoviePage() {
             <Trailer trailerKey={trailerKey} trailerName={trailerName} />
           </div>
 
-          <div className="flex flex-col items-center max-w-167.5">
+          <div className="flex max-w-167.5 flex-col items-center">
             <div className="flex items-start gap-8">
               <div className="hidden max-[600px]:block">
                 <PosterSection
@@ -66,32 +82,32 @@ export default function MoviePage() {
               </div>
               <div className="flex max-w-97.5 flex-col gap-3">
                 <h2 className="font-serifTitle text-[clamp(1.625rem,1.4643rem+0.7143vw,2rem)] font-bold text-white">
-                  {movie?.title}
+                  {movie.title}
                 </h2>
                 <div className="flex flex-col gap-8">
                   <div className="flex flex-wrap gap-2 font-sans text-base">
                     <div className="flex gap-3 text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)]">
                       <span className="text-[#DDEEFF]">
-                        {movie?.release_date?.slice(0, 4)}
+                        {movie?.release_date.slice(0, 4)}
                       </span>
                       <span>Origin countries:</span>
                     </div>
-                    {movie?.origin_country?.map((c, index) => (
+                    {movie.origin_country.map((c, index) => (
                       <span
-                        key={index}
+                        key={c}
                         className="text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)] text-[#DDEEFF]"
                       >
                         {c}
-                        {index === movie?.origin_country.length - 1 ? "" : ", "}
+                        {index === movie.origin_country.length - 1 ? "" : ", "}
                       </span>
                     ))}
                   </div>
-                  <p className="font-sans text-sm">{movie?.tagline}</p>
+                  <p className="font-sans text-sm">{movie.tagline}</p>
                 </div>
                 <p className="font-text text-[clamp(0.875rem,0.8214rem+0.2381vw,1rem)]">
-                  {movie?.overview}
+                  {movie.overview}
                 </p>
-                <div className="hidden max-[880px]:block max-[880px]:m-8 max-[550px]:hidden">
+                <div className="hidden max-[880px]:m-8 max-[880px]:block max-[550px]:hidden">
                   <RatingSection movie={movie} info={"adapt"} />
                 </div>
               </div>
@@ -100,7 +116,7 @@ export default function MoviePage() {
               </div>
             </div>
             <div className="font-inter w-[clamp(18.75rem, 16.705rem + 10.23vw, 24.375rem)] max-w-97.5">
-              <div className="hidden max-[550px]:block max-[550px]:m-10">
+              <div className="hidden max-[550px]:m-10 max-[550px]:block">
                 <RatingSection movie={movie} info={"main"} />
               </div>
               <header className="flex flex-wrap gap-5 pt-10">
@@ -142,7 +158,7 @@ export default function MoviePage() {
                   ))}
                 </div>
                 <div className="flex justify-center">
-                  {!allReviewsShow && movie?.reviews?.results.length > 5 && (
+                  {!allReviewsShow && movie.reviews.results.length > 5 && (
                     <button
                       onClick={() => setAllReviewsShow(true)}
                       className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"

@@ -29,6 +29,12 @@ export function usePerson({ departmentTitles }) {
   ];
 
   useEffect(() => {
+    if (person?.name) {
+      document.title = `${person.name} — Filmbox`;
+    }
+  }, [person?.name]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 

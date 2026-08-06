@@ -14,6 +14,10 @@ export function useMovies({
   const [totalResults, setTotalResults] = useState(null);
 
   useEffect(() => {
+    document.title = "Filmbox - Film Catalog"
+  }, []);
+
+  useEffect(() => {
     async function loadMovies() {
       setLoading(true);
 
@@ -71,8 +75,12 @@ export function useMovies({
                 }),
               );
 
-        const moviePages = await Promise.all(requests);
-
+        const settled = await Promise.allSettled(requests);
+        
+        const moviePages = settled
+        .filter(res => res.status === "fulfilled")
+        .map(res => res.value);
+        
         // Группируем по годам явно через slice
         // год 0: moviePages[0,1,2], год 1: moviePages[3,4,5] и тд
         const perYear = Math.floor(60 / (selectedYears.length || 1));

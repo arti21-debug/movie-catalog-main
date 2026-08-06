@@ -30,8 +30,10 @@ export default function Header({ info }) {
           <div className="inline-block">
             <a
               href="/"
-              className="logo block h-13.75 bg-contain bg-no-repeat"
-            ></a>
+              className="mr-6 text-2xl font-bold tracking-widest text-white"
+            >
+              FILM<span className="text-emerald-500">BOX</span>
+            </a>
           </div>
           <nav className="w-full">
             <ul className="flex items-center justify-between gap-3 max-[1050px]:justify-end">
@@ -60,7 +62,7 @@ export default function Header({ info }) {
                 >
                   <input
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`${info === "movie" && "transition duration-400 group-hover:bg-gray-500"} h-7.5 w-[clamp(4.375rem,2.557rem+9.09vw,9.375rem)] rounded-[15px] bg-[#2c3440] pl-3 pr-8 text-[#7b7b7b] outline-none focus:bg-[#7b7b7b] focus:text-black`}
+                    className={`${info === "movie" && "transition duration-400 group-hover:bg-gray-500"} h-7.5 w-[clamp(4.375rem,2.557rem+9.09vw,9.375rem)] rounded-[15px] bg-[#2c3440] pr-8 pl-3 text-[#7b7b7b] outline-none focus:bg-[#7b7b7b] focus:text-black`}
                     type="text"
                   />
                   <button
