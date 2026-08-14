@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["src", "utilits/getCarouselSlides.js"]
+  "include": ["src", "utilits/getCarouselSlides.ts"]
 }
