@@ -1,5 +1,5 @@
 import { Movie } from "@/types/tmdb";
-import { useWatchlistStore } from "../store/useWatchlistStore";
+import { useWatchlistStore } from "../../store/useWatchlistStore";
 import { Check, Heart, X } from "lucide-react";
 
 interface MovieProp {

@@ -1,5 +1,5 @@
 import { useWatchlistStore } from "@/store/useWatchlistStore";
-import Header from "../SiteHeader";
+import Header from "../ui/SiteHeader";
 import WatchlistMovie from "./WatchlistMovie";
 import { useEffect, useState } from "react";
 

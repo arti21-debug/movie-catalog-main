@@ -1,6 +1,6 @@
 // components/NotFoundPage.jsx
 import { Link } from "react-router-dom";
-import Header from "./SiteHeader";
+import Header from "./ui/SiteHeader";
 
 export default function NotFoundPage() {
   return (

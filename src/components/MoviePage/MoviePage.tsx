@@ -1,4 +1,4 @@
-import Header from "../SiteHeader.js";
+import Header from "../ui/SiteHeader";
 import { useMovie } from "../../hooks/useMovie.js";
 import { useState } from "react";
 import Trailer from "./TrailerModal.js";

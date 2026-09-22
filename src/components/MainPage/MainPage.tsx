@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Dropdown from "./Dropdown";
+import Dropdown from "../ui/Dropdown";
 import { useMovies } from "../../hooks/useMovies";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Header from "../SiteHeader";
-import Movie from "../Movie";
+import Header from "../ui/SiteHeader";
+import Movie from "../ui/Movie";
 import { RatingOption, RuntimeOption } from "@/types/tmdb";
 import { SortType } from "@/hooks/useDropdown";
 

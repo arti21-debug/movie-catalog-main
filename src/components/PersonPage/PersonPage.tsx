@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { usePerson, DepartmentKey } from "@/hooks/usePerson";
-import Header from "../SiteHeader";
+import Header from "../ui/SiteHeader";
 import PersonData from "./PersonData";
-import Movie from "../Movie";
+import Movie from "../ui/Movie";
 
 export default function PersonPage() {
   const {

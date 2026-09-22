@@ -1,7 +1,7 @@
 import chevronDown from "@/icons/chevron-down.svg";
 import chevronTop from "@/icons/chevron-top.svg";
 import { SortType, useDropdown } from "@/hooks/useDropdown";
-import { Genre, RatingOption, RuntimeOption } from "@/types/tmdb";
+import { RatingOption, RuntimeOption } from "@/types/tmdb";
 
 const ratingOptions = [
   { label: "Any", min: null, max: null },

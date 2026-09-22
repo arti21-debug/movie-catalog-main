@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Movie from "../Movie";
+import Movie from "../ui/Movie";
 import { Check, Heart, X } from "lucide-react";
 import { WatchlistMovie } from "@/types/tmdb";
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCarouselSlides } from "@/utilits/getCarouselSlides";
+import { getCarouselSlides } from "@/utils/getCarouselSlides";
 import { useSwipe } from "@/hooks/useSwipe";
 import { Movie } from "@/types/tmdb";
 

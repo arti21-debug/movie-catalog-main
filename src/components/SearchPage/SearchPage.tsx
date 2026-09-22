@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useSearch } from "@/hooks/useSearch";
-import Header from "../SiteHeader";
+import Header from "../ui/SiteHeader";
 import SearchedMovie from "./SearchedMovie";
 
 export default function SearchPage() {
