@@ -2,7 +2,7 @@
 
 Каталог фильмов в стиле Letterboxd на базе API [TMDB](https://www.themoviedb.org). Можно просматривать и фильтровать фильмы, открывать страницы фильмов и персон, искать по названию и вести личный вотчлист.
 
-**Демо:** _добавьте ссылку на Vercel_
+**Демо:** https://movie-catalog-main.vercel.app/
 
 ![Фильмы](docs/Movies.png)
 ![Фильм](docs/Movie.png)

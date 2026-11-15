@@ -2,7 +2,7 @@
 
 A movie catalog in the style of Letterboxd, built on the [TMDB](https://www.themoviedb.org) API. Browse and filter films, open a film or person page, search by title and keep a personal watchlist.
 
-**Demo:** _add your Vercel link here_
+**Demo:** https://movie-catalog-main.vercel.app/
 
 ![Movies](docs/Movies.png)
 ![Movie](docs/Movie.png)
