@@ -18,9 +18,13 @@ export function useDropdown(sortType: SortType) {
   const fetchGenres = useFiltersStore((state) => state.fetchGenres);
   const fetchCountries = useFiltersStore((state) => state.fetchCountries);
 
+  // закрытие по клику извне
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -28,14 +32,17 @@ export function useDropdown(sortType: SortType) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // открытие/закрытие по клику на заголовок
   const handleOpen = () => {
     setIsOpen(!isOpen);
     setCountryQuery("");
 
+    // данные запрашиваем лениво, только когда пользователь трогает нужный список
     if (sortType === "GENRE") fetchGenres();
     if (sortType === "COUNTRY") fetchCountries();
   };
 
+  // статус загрузки и ошибка берутся из той части стора, которая относится к этому списку
   const loading = sortType === "GENRE" ? genresLoading : countriesLoading;
   const error = sortType === "GENRE" ? genresError : countriesError;
 

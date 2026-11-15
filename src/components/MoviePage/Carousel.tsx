@@ -7,12 +7,19 @@ interface CarouselProps {
   movie: Movie | null;
 }
 
+// карусель кадров фильма: слайды по 2 картинки, автопрокрутка, свайпы,
+// стрелки, точки-индикаторы и полноэкранный просмотр по клику
 export default function Carousel({ movie }: CarouselProps) {
+  // индекс текущего слайда
   const [currImgIndex, setCurrImgIndex] = useState(0);
+  // открыт ли полноэкранный просмотр
   const [isOpen, setIsOpen] = useState(false);
+  // путь к картинке, открытой в просмотре
   const [currImg, setCurrImg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // пока открыт просмотр, блокируем прокрутку страницы под ним;
+  // при закрытии и размонтировании возвращаем как было
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
 
@@ -21,8 +28,11 @@ export default function Carousel({ movie }: CarouselProps) {
     };
   }, [isOpen]);
 
+  // разбиваем изображения фильма на слайды (по 2 картинки на слайд)
   const { slides } = getCarouselSlides(movie);
 
+  // свайпы на тач-устройствах: влево — следующий слайд, вправо — предыдущий;
+  // с последнего слайда идём на первый и наоборот (зацикливание)
   const { handleTouchStart, handleTouchEnd } = useSwipe({
     onSwipeLeft: () =>
       setCurrImgIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1)),
@@ -30,6 +40,9 @@ export default function Carousel({ movie }: CarouselProps) {
       setCurrImgIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1)),
   });
 
+  // автопрокрутка: через 10 секунд переходим на следующий слайд;
+  // таймер перезапускается при любой смене слайда (в том числе ручной),
+  // поэтому после клика пользователю дают полные 10 секунд
   useEffect(() => {
     const timerId = setTimeout(() => {
       setCurrImgIndex((index) => (index === slides.length - 1 ? 0 : index + 1));
@@ -45,6 +58,8 @@ export default function Carousel({ movie }: CarouselProps) {
         onTouchEnd={handleTouchEnd}
         className="relative mt-18 w-full max-w-5xl overflow-hidden rounded-xl"
       >
+        {/* лента слайдов: сдвигаем влево на ширину текущего слайда (100% на слайд),
+            плавность даёт transition */}
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{
@@ -52,9 +67,12 @@ export default function Carousel({ movie }: CarouselProps) {
           }}
         >
           {slides.map((slide, index) => (
+            // каждый слайд — сетка из двух колонок на всю ширину
             <div key={index} className="grid w-full shrink-0 grid-cols-2 gap-2">
               {slide.map((img) => (
                 <div key={img.file_path}>
+                  {/* клик по картинке открывает её в полноэкранном просмотре;
+                      loading=true показывает спиннер до загрузки */}
                   <button
                     onClick={() => {
                       setIsOpen(true);
@@ -74,6 +92,7 @@ export default function Carousel({ movie }: CarouselProps) {
           ))}
         </div>
 
+        {/* стрелка «назад» (с первого слайда переходит на последний) */}
         <button
           onClick={() =>
             setCurrImgIndex((prev) =>
@@ -97,6 +116,7 @@ export default function Carousel({ movie }: CarouselProps) {
             />
           </svg>
         </button>
+        {/* стрелка «вперёд» (с последнего слайда переходит на первый) */}
         <button
           onClick={() =>
             setCurrImgIndex((prev) =>

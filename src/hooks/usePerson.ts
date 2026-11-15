@@ -1,3 +1,4 @@
+import { errorMessage, isAbortError, tmdbFetch } from "@/lib/tmdb";
 import { PersonWithCredits } from "@/types/tmdb";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -17,6 +18,7 @@ export const departmentTitles = {
   Crew: "FILMS WITH CREW BY",
 } as const;
 
+// ключ отдела: одно из названий, для которых есть заголовок в departmentTitles
 export type DepartmentKey = keyof typeof departmentTitles;
 
 export function usePerson() {
@@ -24,14 +26,21 @@ export function usePerson() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // id персоны из адреса /person/:id
   const { id } = useParams();
+  // отдел из адреса (?department=Directing); его передают кнопки из блоков Cast и Crew
   const [searchParams] = useSearchParams();
   const department = searchParams.get("department");
 
-  const [currDepartment, setCurrDepartment] =
-    useState<DepartmentKey>((department as DepartmentKey) ?? "Acting");
+  // текущий отдел (вкладка фильмографии); стартовое значение берём из URL,
+  // а если параметра нет — показываем актёрские работы
+  const [currDepartment, setCurrDepartment] = useState<DepartmentKey>(
+    (department as DepartmentKey) ?? "Acting",
+  );
 
   const title = departmentTitles[currDepartment] ?? `FILMS BY`;
+  // фильмы выбранного отдела: у актёров они лежат в cast, у остальных — в crew
+  // и фильтруются по названию отдела
   const movies =
     currDepartment === "Acting"
       ? (person?.movie_credits.cast ?? [])
@@ -39,6 +48,8 @@ export function usePerson() {
           (m) => m.department === currDepartment,
         ) ?? []);
 
+  // уникальные отделы, в которых человек работал (для переключателя вкладок);
+  // Set убирает повторы, filter(Boolean) отбрасывает пустые значения
   const uniqueDepartment = [
     ...new Set(
       person?.movie_credits.crew
@@ -57,38 +68,36 @@ export function usePerson() {
     window.scrollTo(0, 0);
   }, [id]);
 
+  // загрузка данных персоны при смене id
   useEffect(() => {
     if (!id) return;
 
-    const headers = {
-      Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
-      accept: "application/json",
-    };
+    // Свой контроллер на каждый запуск: позволяет отменить устаревший запрос.
+    const ctrl = new AbortController();
+    setLoading(true);
+    setError(null);
 
-    async function getPerson() {
-      setLoading(true);
+    // Персона и её фильмография одним запросом: append_to_response
+    // подмешивает movie_credits в основной ответ.
+    tmdbFetch<PersonWithCredits>(
+      `/person/${id}`,
+      { append_to_response: "movie_credits" },
+      ctrl.signal,
+    )
+      .then(setPerson) // упрощённая запись, результат сразц попадает в состояние
+      .catch((err) => {
+        // Отмена запроса — штатная ситуация, пользователю её не показываем.
+        if (!isAbortError(err)) setError(errorMessage(err));
+      })
+      .finally(() => {
+        // После отмены состоянием loading уже управляет новый запуск эффекта;
+        // сброс здесь вызвал бы мигание индикатора.
+        if (!ctrl.signal.aborted) setLoading(false);
+      });
 
-      try {
-        const request = fetch(
-          `https://api.themoviedb.org/3/person/${id}?append_to_response=movie_credits`,
-          {
-            headers,
-          },
-        ).then((res) => {
-          if (!res.ok) throw new Error("Ошибка запроса");
-          return res.json();
-        });
-
-        const resp = await request;
-        setPerson(resp);
-      } catch (err) {
-        if (err instanceof Error) setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    getPerson();
+    // Cleanup: при смене id или размонтировании отменяем устаревший запрос,
+    // чтобы его ответ не перезаписал актуальные данные.
+    return () => ctrl.abort();
   }, [id]);
 
   return {

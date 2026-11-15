@@ -1,4 +1,5 @@
-import { Movie, Provider } from "@/types/tmdb";
+import { errorMessage, isAbortError, tmdbFetch } from "@/lib/tmdb";
+import { Movie, Provider, ReviewsResponse } from "@/types/tmdb";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -14,6 +15,8 @@ export function useMovie({ allReviewsShow, reviewPage }: Review) {
 
   const { id } = useParams();
 
+  // заголовок вкладки: "Название (год) — Filmbox";
+  // при уходе со страницы возвращаем обычный заголовок
   useEffect(() => {
     if (movie?.title && movie?.release_date) {
       document.title = `${movie.title} (${movie.release_date.slice(0, 4)}) — Filmbox`;
@@ -24,10 +27,12 @@ export function useMovie({ allReviewsShow, reviewPage }: Review) {
     };
   }, [movie?.title, movie?.release_date]);
 
+  // при переходе на другой фильм прокручиваем страницу вверх
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
+  // первые 6 похожих фильмов
   const firstSimilar = movie?.similar?.results.filter((_, i) => i < 6) ?? [];
 
   // получаем массив количества страниц
@@ -57,66 +62,62 @@ export function useMovie({ allReviewsShow, reviewPage }: Review) {
   const providersData = movie?.["watch/providers"]?.results ?? {};
   const countryProviders = providersData.US ?? Object.values(providersData)[0];
 
+  // объединяем подписку, аренду и покупку в один список без повторов:
+  // Map по provider_id оставляет одну запись для сервиса, даже если он есть в нескольких категориях
   const filteredProviders: Provider[] = countryProviders
-  ? [
-    ...new Map(
-      (["flatrate", "rent", "buy"] as const)
-      .flatMap((key) => countryProviders[key] ?? [])
-      .map((prov) => [prov.provider_id, prov]),
-    ).values(),
-  ] : [];
+    ? [
+        ...new Map(
+          (["flatrate", "rent", "buy"] as const)
+            .flatMap((key) => countryProviders[key] ?? [])
+            .map((prov) => [prov.provider_id, prov]),
+        ).values(),
+      ]
+    : [];
 
+  // загрузка данных: срабатывает при смене фильма и при смене страницы отзывов
   useEffect(() => {
     if (!id) return;
 
-    const headers = {
-      Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
-      accept: "application/json",
-    };
+    // Один контроллер на запуск эффекта: отменяет сразу оба запроса.
+    const ctrl = new AbortController();
+    setLoading(true);
+    setError(null);
 
-    async function getMovie() {
-      setLoading(true);
+    Promise.all([
+      // Фильм + доп. данные одним запросом (append_to_response в TMDB
+      // подмешивает перечисленные ресурсы в основной ответ).
+      tmdbFetch<Movie>(
+        `/movie/${id}`,
+        {
+          append_to_response:
+            "watch/providers,credits,videos,images,release_dates,similar",
+        },
+        ctrl.signal,
+      ),
+      // Отзывы грузятся отдельно: они постраничные (параметр page).
+      tmdbFetch<ReviewsResponse>(
+        `/movie/${id}/reviews`,
+        { page: reviewPage },
+        ctrl.signal,
+      ),
+    ])
+      // Порядок результатов совпадает с порядком запросов в массиве.
+      .then(([movieData, reviewsData]) =>
+        setMovie({ ...movieData, reviews: reviewsData }),
+      )
+      .catch((err) => {
+        // Отмена запроса — штатная ситуация, пользователю её не показываем.
+        if (!isAbortError(err)) setError(errorMessage(err));
+      })
+      .finally(() => {
+        // После отмены состоянием loading уже управляет новый запуск эффекта;
+        // сброс здесь вызвал бы мигание индикатора.
+        if (!ctrl.signal.aborted) setLoading(false);
+      });
 
-      try {
-        const request = fetch(
-          `https://api.themoviedb.org/3/movie/${id}?append_to_response=watch/providers,credits,videos,images,release_dates,similar`,
-          {
-            headers,
-          },
-        ).then((res) => {
-          if (!res.ok) throw new Error("Ошибка запроса");
-          return res.json();
-        });
-
-        const reviewsRequest = fetch(
-          `https://api.themoviedb.org/3/movie/${id}/reviews?page=${reviewPage}`,
-          {
-            headers,
-          },
-        ).then((res) => {
-          if (!res.ok) throw new Error("Ошибка запроса");
-          return res.json();
-        });
-
-        const [movieData, reviewsData] = await Promise.all([
-          request,
-          reviewsRequest,
-        ]);
-
-        setMovie({
-          ...movieData,
-          reviews: reviewsData,
-        });
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    getMovie();
+    // Cleanup: при смене id/reviewPage или размонтировании отменяем
+    // устаревшие запросы, чтобы их ответы не перезаписали актуальные данные.
+    return () => ctrl.abort();
   }, [id, reviewPage]);
 
   return {

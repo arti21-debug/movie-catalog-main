@@ -169,7 +169,15 @@ interface SimilarMovie {
   vote_count: number;
 }
 
-export interface WatchlistMovie extends Movie {
+// минимум данных, нужных карточке фильма (постер + подпись при наведении)
+export type MovieCardData = Pick<
+  Movie,
+  "id" | "title" | "poster_path" | "release_date" | "vote_average"
+>;
+
+// то, что реально хранится в списке просмотра (и в localStorage)
+export interface WatchlistMovie extends MovieCardData {
+  overview: string;
   status: WatchStatus;
 }
 

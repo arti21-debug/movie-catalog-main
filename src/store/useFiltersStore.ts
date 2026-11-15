@@ -1,3 +1,4 @@
+import { tmdbFetch } from "@/lib/tmdb";
 import { Country, Genre } from "@/types/tmdb";
 import { create } from "zustand";
 
@@ -25,34 +26,31 @@ export const useFiltersStore = create<FilterStore>((set, get) => ({
   genresError: null,
   countriesError: null,
 
+  // загружает список жанров
   fetchGenres: async () => {
+    // уже загружено — повторный запрос не нужен (кэш в памяти)
     if (get().genres.length > 0) return;
 
+    // запрос уже идёт — не дублируем
     if (get().genresLoading) return;
 
+    // включаем загрузку и очищаем прошлую ошибку, чтобы повторная попытка была «с чистого листа»
     set({ genresLoading: true, genresError: null });
 
     try {
-      const res = await fetch("https://api.themoviedb.org/3/genre/movie/list", {
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
-          accept: "application/json",
-        },
-      });
-
-      if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
-
-      const data = await res.json();
+      const data = await tmdbFetch<{ genres: Genre[] }>("/genre/movie/list");
       set({ genres: data.genres });
     } catch (err) {
       if (err instanceof Error) {
         set({ genresError: err.message });
       }
     } finally {
+      // загрузка закончена в любом случае: успех или ошибка
       set({ genresLoading: false });
     }
   },
 
+  // загружает список стран; логика та же, что у жанров
   fetchCountries: async () => {
     if (get().countries.length > 0) return;
     if (get().countriesLoading) return;
@@ -60,20 +58,9 @@ export const useFiltersStore = create<FilterStore>((set, get) => ({
     set({ countriesLoading: true, countriesError: null });
 
     try {
-      const res = await fetch(
-        "https://api.themoviedb.org/3/configuration/countries",
-        {
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
-            accept: "application/json",
-          },
-        },
-      );
-
-      if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
-
-      const data = await res.json();
-      set({ countries: data });
+      set({
+        countries: await tmdbFetch<Country[]>("/configuration/countries"),
+      });
     } catch (err) {
       if (err instanceof Error) {
         set({ countriesError: err.message });

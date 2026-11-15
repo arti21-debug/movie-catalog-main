@@ -5,9 +5,14 @@ interface CrewProps {
   movie: Movie;
 }
 
+// блок съёмочной группы: сгруппирован по отделам (Directing, Writing, Production и т.д.),
+// в каждом отделе кнопки с именами людей
 export default function Crew({ movie }: CrewProps) {
   const navigate = useNavigate();
 
+  // уникальные названия отделов в порядке первого появления в списке:
+  // Set убирает повторы, filter(Boolean) отбрасывает пустые значения,
+  // ?? [] защищает от случая, когда данные фильма ещё не загружены
   const uniqueDepartments = [
     ...new Set(
       movie?.credits?.crew?.map((p) => p.department).filter(Boolean) ?? [],
@@ -28,7 +33,7 @@ export default function Crew({ movie }: CrewProps) {
               .map((p) => (
                 <button
                   onClick={() =>
-                    navigate(`/person/${p.id}?department=${p.department}`)
+                    navigate(`/person/${p.id}?department=${encodeURIComponent(p.department)}`)
                   }
                   key={p.credit_id || p.id}
                   className="grey-button"

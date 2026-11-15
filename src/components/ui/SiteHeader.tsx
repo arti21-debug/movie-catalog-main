@@ -1,5 +1,5 @@
 import { useState } from "react";
-import search from "../icons/search.svg";
+import search from "../../icons/search.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { Popcorn } from "lucide-react";
 

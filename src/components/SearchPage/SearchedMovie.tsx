@@ -53,7 +53,7 @@ export default function SearchedMovie({ movie, isHide, cutedText }: SearchedMovi
                 <button
                   onClick={() =>
                     navigate(
-                      `/person/${movie.crewId}?department=${movie.crewDepartment}`,
+                      `/person/${movie.crewId}?department=${encodeURIComponent(movie.crewDepartment ?? "")}`,
                     )
                   }
                   className="grey-button ml-2"

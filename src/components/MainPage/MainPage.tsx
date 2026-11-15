@@ -12,6 +12,7 @@ const sort: SortType[] = ["GENRE", "COUNTRY", "RUNTIME", "Find by year", "Find b
 export default function MainPage() {
   const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  // "Any" с границами null означает «без ограничения»
   const [selectedRuntime, setSelectedRuntime] = useState<RuntimeOption>({
     label: "Any",
     min: null,
@@ -24,10 +25,13 @@ export default function MainPage() {
     max: null,
   });
 
+  // номер страницы хранится в URL (?page=2), чтобы работали «назад» и ссылки на страницу
   const [searchParams, setSearchParams] = useSearchParams();
+  // если параметра нет или он некорректен (NaN/0), открываем первую страницу
   const currentGroup = Number(searchParams.get("page")) || 1;
   const navigate = useNavigate();
 
+  // загрузка фильмов: хук перезапрашивает данные при смене страницы или любого фильтра
   const {
     movieResult,
     loading: moviesLoading,
@@ -42,8 +46,13 @@ export default function MainPage() {
     selectedRating,
   });
 
+  // убираем дубли по id: Map хранит по одному фильму на каждый id,
+  // при повторе побеждает последний; порядок сохраняется
   const uniqueMovies = [...new Map(movieResult.map((m) => [m.id, m])).values()];
 
+  // обработчики смены фильтров: сохраняют новое значение
+  // и возвращают пользователя на первую страницу, иначе он мог бы оказаться
+  // на несуществующей странице уже отфильтрованного списка
   const handleRatingChange = (rating: RatingOption) => {
     setSelectedRating(rating);
     setSearchParams({ page: "1" });
@@ -78,6 +87,8 @@ export default function MainPage() {
             <div className="flex justify-between pb-1 text-[#99aabb] max-[600px]:flex-wrap max-[600px]:justify-center">
               <h2 className="max-[600px]:hidden">FILMS</h2>
               <div className="flex items-center gap-5 max-[540px]:flex-col">
+                {/* по одному выпадающему списку на каждый тип фильтра из массива sort;
+                    компонент сам выбирает, какой фильтр показать, по sortType */}
                 {sort.map((type) => {
                   return (
                     <Dropdown
@@ -100,6 +111,7 @@ export default function MainPage() {
             </div>
             <div className="border-b text-[#7b7f83]"></div>
           </div>
+          {/* общее количество найденных фильмов; показываем, только когда есть результаты */}
           {movieResult.length > 0 && totalResults && (
             <div className="h-10 w-full rounded-sm bg-[#545f6a] px-8 py-2.5 text-[#99aabb]">
               <p className="flex justify-center">
@@ -127,6 +139,8 @@ export default function MainPage() {
                 })}
               </ul>
             ) : (
+              // «не найдено» показываем только после окончания загрузки,
+              // иначе оно мелькало бы до прихода данных
               !moviesLoading &&
               movieResult.length === 0 && (
                 <div className="text-center text-base font-bold text-amber-500">
@@ -144,17 +158,23 @@ export default function MainPage() {
           <div
             className={`flex ${currentGroup > 1 ? "justify-between" : "justify-end"} pt-2.5`}
           >
+            {/* «Previous» — только если мы не на первой странице */}
             {currentGroup > 1 && (
               <button
-                onClick={() => setSearchParams({ page: String(currentGroup - 1) })}
+                onClick={() =>
+                  setSearchParams({ page: String(currentGroup - 1) })
+                }
                 className="rounded-sm bg-[#283038] px-3.75 py-2.25 text-[#99AABB]"
               >
                 Previous
               </button>
             )}
+            {/* «Next» — только если в выдаче больше 20 фильмов, т.е. есть следующая страница */}
             {movieResult.length > 20 && (
               <button
-                onClick={() => setSearchParams({ page: String(currentGroup + 1) })}
+                onClick={() =>
+                  setSearchParams({ page: String(currentGroup + 1) })
+                }
                 className="rounded-sm bg-[#283038] px-3.75 py-2.25 text-[#99AABB]"
               >
                 Next

@@ -9,6 +9,7 @@ export default function Trailer({ trailerKey, trailerName }: TrailerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // закрытие по клику извне
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
 
@@ -16,6 +17,8 @@ export default function Trailer({ trailerKey, trailerName }: TrailerProps) {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  if (!trailerKey) return null;
 
   return (
     <div className="flex justify-center">

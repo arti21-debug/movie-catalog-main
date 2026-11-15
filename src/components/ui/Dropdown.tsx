@@ -51,6 +51,7 @@ interface DropdownProps {
   onRatingChange: (rat: RatingOption) => void;
 }
 
+// универсальный выпадающий список: по sortType показывает один из пяти фильтров
 export default function Dropdown({
   sortType,
   selectedGenres,
@@ -76,6 +77,7 @@ export default function Dropdown({
     handleOpen,
   } = useDropdown(sortType);
 
+  // мультивыбор: клик по уже выбранному году снимает выбор, по новому — добавляет
   const handleYearClick = (year: number) => {
     const newYears = selectedYears.includes(year)
       ? selectedYears.filter((y) => y !== year)
@@ -84,6 +86,7 @@ export default function Dropdown({
     onYearChange(newYears);
   };
 
+  // то же для стран (по коду ISO)
   const handleCountryClick = (countryName: string) => {
     const newCountries = selectedCountries.includes(countryName)
       ? selectedCountries.filter((c) => c !== countryName)
@@ -92,6 +95,7 @@ export default function Dropdown({
     onCountryChange(newCountries);
   };
 
+  // то же для жанров (по id)
   const handleGenreClick = (genreId: number) => {
     const newGenres = selectedGenres.includes(genreId)
       ? selectedGenres.filter((g) => g !== genreId)
@@ -125,22 +129,24 @@ export default function Dropdown({
         >
           {loading && <li className="px-4 py-2 text-gray-400">Loading...</li>}
           {error && <li className="px-4 py-2 text-red-400">{error}</li>}
-          {!loading && !error && genres.map((genre) => {
-            return (
-              <li
-                key={genre.id}
-                className="px-4 py-0.5 text-nowrap hover:bg-gray-800 hover:text-emerald-600"
-                onClick={() => handleGenreClick(genre.id)}
-                role="option"
-                aria-selected={selectedGenres.includes(genre.id)}
-              >
-                {selectedGenres.includes(genre.id) && (
-                  <span className="text-emerald-500">✔ </span>
-                )}
-                {genre.name}
-              </li>
-            );
-          })}
+          {!loading &&
+            !error &&
+            genres.map((genre) => {
+              return (
+                <li
+                  key={genre.id}
+                  className="px-4 py-0.5 text-nowrap hover:bg-gray-800 hover:text-emerald-600"
+                  onClick={() => handleGenreClick(genre.id)}
+                  role="option"
+                  aria-selected={selectedGenres.includes(genre.id)}
+                >
+                  {selectedGenres.includes(genre.id) && (
+                    <span className="text-emerald-500">✔ </span>
+                  )}
+                  {genre.name}
+                </li>
+              );
+            })}
         </ul>
       )}
 
@@ -165,6 +171,9 @@ export default function Dropdown({
           <li className="cursor-auto px-4 py-0.5 pb-2 font-semibold text-emerald-600">
             {countryQuery === "" ? "Popular:" : "Search results:"}
           </li>
+          {/* источник списка: без запроса — 8 популярных стран, с запросом — страны из API,
+              отфильтрованные по английскому названию без учёта регистра;
+              оба варианта приводятся к одному виду { id, name, iso } */}
           {(countryQuery === ""
             ? countriesDroplist.map((ctry) => ({
                 id: ctry.iso,

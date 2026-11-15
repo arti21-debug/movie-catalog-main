@@ -46,7 +46,7 @@ export default function MoviePage() {
       </div>
     );
 
-    if (!movie) return null;
+  if (!movie) return;
 
   return (
     <div className="bg-[#14181C] text-[#99AABB]">
@@ -117,7 +117,7 @@ export default function MoviePage() {
                 <RatingSection movie={movie} info={"adapt"} />
               </div>
             </div>
-            <div className="font-inter w-[clamp(18.75rem, 16.705rem + 10.23vw, 24.375rem)] max-w-97.5">
+            <div className="font-inter w-[clamp(18.75rem,16.705rem+10.23vw,24.375rem)] max-w-97.5">
               <div className="hidden max-[550px]:m-10 max-[550px]:block">
                 <RatingSection movie={movie} info={"main"} />
               </div>
@@ -160,26 +160,28 @@ export default function MoviePage() {
                   ))}
                 </div>
                 <div className="flex justify-center">
-                  {!allReviewsShow && movie.reviews && movie.reviews.results.length > 5 && (
-                    <button
-                      onClick={() => setAllReviewsShow(true)}
-                      className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"
-                      style={{
-                        padding:
-                          "clamp(0.125rem, 0.1rem + 0.125vw, 0.25rem) clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem)",
-                        fontSize: "clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)",
-                      }}
-                    >
-                      Show all reviews
-                    </button>
-                  )}
+                  {!allReviewsShow &&
+                    movie.reviews &&
+                    movie.reviews.results.length > 5 && (
+                      <button
+                        onClick={() => setAllReviewsShow(true)}
+                        className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"
+                        style={{
+                          padding:
+                            "clamp(0.125rem,0.1rem+0.125vw,0.25rem) clamp(0.375rem,0.25rem+0.5vw,0.625rem)",
+                          fontSize: "clamp(0.75rem,0.7rem+0.25vw,0.875rem)",
+                        }}
+                      >
+                        Show all reviews
+                      </button>
+                    )}
                   {allReviewsShow && (
                     <button
                       onClick={() => setAllReviewsShow(false)}
                       className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap hover:bg-gray-700 hover:text-gray-200"
                       style={{
                         padding:
-                          "clamp(0.125rem, 0.1rem + 0.125vw, 0.25rem) clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem)",
+                          "clamp(0.125rem,0.1rem+0.125vw,0.25rem) clamp(0.375rem,0.25rem+0.5vw,0.625rem)",
                         fontSize: "clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)",
                       }}
                     >
@@ -207,19 +209,21 @@ export default function MoviePage() {
                 </h2>
                 <div className="mt-1 border-b text-[#283038]"></div>
                 <div className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-3">
-                  {firstSimilar.map((film) => (
-                    <button
-                      key={film.id}
-                      onClick={() => navigate(`/movie/${film.id}`)}
-                    >
-                      <img
-                        className="aspect-2/3 w-full rounded-sm border border-gray-700 transition duration-500 hover:border-gray-300"
-                        src={`https://image.tmdb.org/t/p/w342${film.poster_path}`}
-                        alt={film.title}
-                        loading="lazy"
-                      />
-                    </button>
-                  ))}
+                  {firstSimilar
+                    .filter((film) => film.poster_path)
+                    .map((film) => (
+                      <button
+                        key={film.id}
+                        onClick={() => navigate(`/movie/${film.id}`)}
+                      >
+                        <img
+                          className="aspect-2/3 w-full rounded-sm border border-gray-700 transition duration-500 hover:border-gray-300"
+                          src={`https://image.tmdb.org/t/p/w342${film.poster_path}`}
+                          alt={film.title}
+                          loading="lazy"
+                        />
+                      </button>
+                    ))}
                 </div>
               </div>
             )}

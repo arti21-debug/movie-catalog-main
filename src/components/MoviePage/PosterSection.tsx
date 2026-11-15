@@ -5,15 +5,20 @@ interface PosterProps {
   filteredProviders: Provider[];
 }
 
-export default function PosterSection({ movie, filteredProviders }: PosterProps) {
+export default function PosterSection({
+  movie,
+  filteredProviders,
+}: PosterProps) {
   return (
     <div className="flex w-[clamp(150px,15vw,230px)] flex-col items-center">
-      <img
-        className="relative z-10 h-auto w-full rounded-md"
-        src={`https://image.tmdb.org/t/p/original${movie?.poster_path}`}
-        alt={movie?.title}
-        loading="lazy"
-      />
+      {movie.poster_path && (
+        <img
+          className="relative z-10 h-auto w-full rounded-md"
+          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+          alt={movie.title}
+          loading="lazy"
+        />
+      )}
       <div className="w-full pt-10">
         <nav className="overflow-hidden rounded-md border border-gray-500">
           <div className="bg-[#283038] p-3">WHERE TO WATCH</div>
