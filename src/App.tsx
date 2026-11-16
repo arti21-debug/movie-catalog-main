@@ -11,13 +11,24 @@ export default function App() {
   const { pathname } = useLocation();
 
   return (
-    <Routes>
-      <Route path="/" element={<MainPage />} key={pathname} />
-      <Route path="/movie/:id" element={<MoviePage />} key={pathname} />
-      <Route path="/person/:id" element={<PersonPage />} key={pathname} />
-      <Route path="/search" element={<SearchPage />} key={pathname} />
-      <Route path="/watchlist" element={<WatchlistPage />} key={pathname} />
-      <Route path="*" element={<NotFoundPage />} key={pathname} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/movie/:id" element={<MoviePage key={pathname} />} />
+        <Route path="/person/:id" element={<PersonPage key={pathname} />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/watchlist" element={<WatchlistPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+      <footer className="bg-[#12161a] py-6 text-center text-xs text-[#99aabb]">
+        <p>
+          This product uses the TMDB API but is not endorsed or certified by
+          TMDB.
+        </p>
+        <p className="mt-1">
+          Streaming availability data provided by JustWatch.
+        </p>
+      </footer>
+    </>
   );
 }
