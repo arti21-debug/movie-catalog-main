@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import search from "../../icons/search.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { Popcorn } from "lucide-react";
@@ -21,6 +21,30 @@ interface HeaderProps {
 export default function Header({ info }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+  const burgRef = useRef<HTMLUListElement | null>(null);
+
+  // закрытие по клику извне
+  useEffect(() => {
+    if (!isBurgerOpen) return;
+
+    const handeClickOutside = (e: MouseEvent) => {
+      if (burgRef.current && !burgRef.current.contains(e.target as Node)) {
+        setIsBurgerOpen(false);
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsBurgerOpen(false);
+    };
+
+    document.addEventListener("mousedown", handeClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handeClickOutside);
+      document.addEventListener("keydown", handleEscape);
+    };
+  }, [isBurgerOpen]);
 
   const navigate = useNavigate();
 
@@ -89,13 +113,13 @@ export default function Header({ info }: HeaderProps) {
                 </button>
 
                 {isBurgerOpen && (
-                  <ul className="absolute top-full right-0 z-50 w-40 rounded-md border border-white/10 bg-[#1e2630]">
+                  <ul
+                    ref={burgRef}
+                    className="absolute top-full right-0 z-50 w-40 rounded-md border border-white/10 bg-[#1e2630]"
+                  >
                     {NAV_ITEMS.map((item) => (
                       <li key={item}>
-                        <a
-                          href="/"
-                          className="block px-4 py-2 text-sm font-bold text-[#99aabb] hover:text-white"
-                        >
+                        <a className="block cursor-not-allowed px-4 py-2 text-sm font-bold text-[#99aabb] hover:text-white">
                           {item}
                         </a>
                       </li>

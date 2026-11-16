@@ -165,7 +165,7 @@ export default function MoviePage() {
                     movie.reviews.results.length > 5 && (
                       <button
                         onClick={() => setAllReviewsShow(true)}
-                        className="mt-8 py-0.5 px-2 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"
+                        className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] px-2 py-0.5 whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"
                         style={{
                           padding:
                             "clamp(0.125rem,0.1rem+0.125vw,0.25rem) clamp(0.375rem,0.25rem+0.5vw,0.625rem)",
@@ -178,7 +178,7 @@ export default function MoviePage() {
                   {allReviewsShow && (
                     <button
                       onClick={() => setAllReviewsShow(false)}
-                      className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap hover:bg-gray-700 hover:text-gray-200"
+                      className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] px-2 py-0.5 whitespace-nowrap hover:bg-gray-700 hover:text-gray-200"
                       style={{
                         padding:
                           "clamp(0.125rem,0.1rem+0.125vw,0.25rem) clamp(0.375rem,0.25rem+0.5vw,0.625rem)",
