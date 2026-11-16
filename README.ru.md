@@ -23,7 +23,7 @@ React 19 · TypeScript · Vite · Tailwind CSS 4 · React Router 7 · Zustand 5 
 
 ## Запуск
 
-Нужны Node.js 20+ и бесплатный [аккаунт TMDB](https://www.themoviedb.org/settings/api).
+Нужны Node.js 20.19+ (или 22.13+) и бесплатный [аккаунт TMDB](https://www.themoviedb.org/settings/api).
 
 ```bash
 npm ci
