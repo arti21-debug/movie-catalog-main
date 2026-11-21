@@ -72,7 +72,6 @@ Data hooks cancel in-flight requests with `AbortController` when filters, page o
 - On a person page opened for a director, the "Acting" department is not offered in the dropdown.
 - Switching the page of film reviews reloads the whole film.
 - The header has only a "Films" link: sign-in, lists and members are not implemented.
-- ESLint is configured for `.js/.jsx` files only and does not lint `.ts/.tsx`.
 
 ## Attribution
 

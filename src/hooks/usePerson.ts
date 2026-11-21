@@ -74,6 +74,9 @@ export function usePerson() {
 
     // Свой контроллер на каждый запуск: позволяет отменить устаревший запрос.
     const ctrl = new AbortController();
+    // Индикатор загрузки включаем синхронно при старте запроса: это штатный сценарий
+    // «эффект запускает fetch», а не вычисляемое значение, поэтому правило отключено точечно.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError(null);
 

@@ -80,6 +80,9 @@ export function useMovie({ allReviewsShow, reviewPage }: Review) {
 
     // Один контроллер на запуск эффекта: отменяет сразу оба запроса.
     const ctrl = new AbortController();
+    // Индикатор загрузки включаем синхронно при старте запроса: это штатный сценарий
+    // «эффект запускает fetch», а не вычисляемое значение, поэтому правило отключено точечно.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError(null);
 
