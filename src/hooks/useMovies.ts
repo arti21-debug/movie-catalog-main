@@ -1,5 +1,6 @@
 import { errorMessage, isAbortError, tmdbFetch } from "@/lib/tmdb";
 import { Movie, MoviePage, RatingOption, RuntimeOption } from "@/types/tmdb";
+import { countTotalResults } from "@/utils/countTotalResults";
 import { useEffect, useState } from "react";
 
 interface MoviesData {
@@ -24,6 +25,7 @@ export function useMovies({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalResults, setTotalResults] = useState<number | null>(null);
+  const [hasNextPage, setHasNextPage] = useState(false);
 
   useEffect(() => {
     document.title = "Filmbox - Film Catalog";
@@ -129,12 +131,17 @@ export function useMovies({
             : moviePages.flatMap((page) => page.results).slice(0, 60);
 
         // «общее число фильмов» для плашки «There are N films»
-        const total = moviePages
-          .filter((_, i) => i % 3 === 0)
-          .reduce((acc, page) => acc + page.total_results, 0);
+        const total = countTotalResults(moviePages);
+
+        // текущая группа покрывает страницы TMDB до currentGroup * 3 включительно;
+        // следующая есть, если хотя бы у одного запроса страниц больше
+        const hasNext = moviePages.some(
+          (page) => page.total_pages > currentGroup * 3,
+        );
 
         setMovieResult(allMovies);
         setTotalResults(total);
+        setHasNextPage(hasNext);
       } catch (err) {
         // Отмена запроса — штатная ситуация, пользователю её не показываем.
         if (!isAbortError(err)) setError(errorMessage(err));
@@ -159,5 +166,5 @@ export function useMovies({
     selectedRating,
   ]);
 
-  return { movieResult, loading, error, totalResults };
+  return { movieResult, loading, error, totalResults, hasNextPage };
 }

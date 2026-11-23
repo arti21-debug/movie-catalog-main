@@ -37,13 +37,14 @@ export default function MainPage() {
     loading: moviesLoading,
     error: moviesError,
     totalResults,
+    hasNextPage,
   } = useMovies({
     currentGroup,
     selectedGenres,
     selectedCountries,
     selectedRuntime,
     selectedYears,
-    selectedRating,
+    selectedRating
   });
 
   // убираем дубли по id: Map хранит по одному фильму на каждый id,
@@ -170,7 +171,7 @@ export default function MainPage() {
               </button>
             )}
             {/* «Next» — только если в выдаче больше 20 фильмов, т.е. есть следующая страница */}
-            {movieResult.length > 20 && (
+            {hasNextPage && (
               <button
                 onClick={() =>
                   setSearchParams({ page: String(currentGroup + 1) })

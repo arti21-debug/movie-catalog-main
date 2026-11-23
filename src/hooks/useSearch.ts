@@ -20,6 +20,7 @@ export function useSearch({ query, currentPage }: Search) {
   const [searchResult, setSearchResult] = useState<SearchedMovie[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [totalPages, setTotalPages] = useState(0);
   // флаг «первая загрузка для этого запроса выполнена»:
   // пока он пуст, загружаем все страницы с 1 до currentPage (например, если пользователь
   // вернулся на страницу с ?page=3), после — догружаем только новую страницу
@@ -47,15 +48,16 @@ export function useSearch({ query, currentPage }: Search) {
 
     // загружает страницу поиска и для каждого фильма отдельным запросом
     // получает съёмочную группу, чтобы найти режиссёра
-    async function loadPage(page: number): Promise<SearchedMovie[]> {
-      const data = await tmdbFetch<{ results: SearchedMovie[] }>(
-        "/search/movie",
-        { query, page },
-        signal,
-      );
+    async function loadPage(
+      page: number,
+    ): Promise<{ movies: SearchedMovie[]; totalPages: number }> {
+      const data = await tmdbFetch<{
+        results: SearchedMovie[];
+        total_pages: number;
+      }>("/search/movie", { query, page }, signal);
 
       // запросы по всем фильмам страницы идут параллельно
-      return Promise.all(
+      const movies = await Promise.all(
         data.results.map(async (movie) => {
           // сбой credits одного фильма не должен ронять всю страницу результатов
           const credits = await tmdbFetch<{ crew?: DirectorCandidate[] }>(
@@ -79,6 +81,8 @@ export function useSearch({ query, currentPage }: Search) {
           };
         }),
       );
+
+      return { movies, totalPages: data.total_pages };
     }
 
     async function getMovies() {
@@ -88,8 +92,10 @@ export function useSearch({ query, currentPage }: Search) {
       try {
         if (effectRef.current) {
           // запрос не менялся и первая загрузка уже была: берём только текущую страницу
-          const moviesWithCredits = await loadPage(currentPage);
+          const { movies: moviesWithCredits, totalPages: pages } =
+            await loadPage(currentPage);
           if (signal.aborted) return; // пока ждали, эффект уже перезапустился
+          setTotalPages(pages);
 
           // на первой странице список заменяем, на остальных — дописываем в конец
           setSearchResult((movies) =>
@@ -101,11 +107,15 @@ export function useSearch({ query, currentPage }: Search) {
           // первая загрузка для этого запроса: последовательно собираем
           // все страницы от 1 до currentPage
           const searched: SearchedMovie[] = [];
+          let pages = 0;
           for (let i = 1; i <= currentPage; i++) {
-            searched.push(...(await loadPage(i)));
+            const page = await loadPage(i);
+            searched.push(...page.movies);
+            pages = page.totalPages; // значение с последней загруженной страницы
           }
           if (signal.aborted) return;
           setSearchResult(searched);
+          setTotalPages(pages);
         }
 
         // с этого момента при росте currentPage догружаем только новую страницу
@@ -127,5 +137,5 @@ export function useSearch({ query, currentPage }: Search) {
     return () => ctrl.abort();
   }, [query, currentPage]);
 
-  return { searchResult, loading, error };
+  return { searchResult, loading, error, totalPages };
 }

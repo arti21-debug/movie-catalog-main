@@ -12,7 +12,8 @@ export default function SearchPage() {
     searchResult,
     loading: searchLoading,
     error: searchError,
-  } = useSearch({query, currentPage});
+    totalPages,
+  } = useSearch({ query, currentPage });
 
   return (
     <>
@@ -70,23 +71,25 @@ export default function SearchPage() {
                 </div>
               </div>
             )}
-            {!searchLoading && searchResult.length > 0 && (
-              <div className="flex justify-center">
-                <button
-                  onClick={() =>
-                    setSearchParams({ query, page: String(currentPage + 1) })
-                  }
-                  className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"
-                  style={{
-                    padding:
-                      "clamp(0.125rem, 0.1rem + 0.125vw, 0.25rem) clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem)",
-                    fontSize: "clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)",
-                  }}
-                >
-                  Show more results
-                </button>
-              </div>
-            )}
+            {!searchLoading &&
+              searchResult.length > 0 &&
+              currentPage < totalPages && (
+                <div className="flex justify-center">
+                  <button
+                    onClick={() =>
+                      setSearchParams({ query, page: String(currentPage + 1) })
+                    }
+                    className="mt-8 rounded-sm border-t border-white/10 bg-[#283038] whitespace-nowrap transition duration-200 hover:bg-gray-700 hover:text-gray-200"
+                    style={{
+                      padding:
+                        "clamp(0.125rem, 0.1rem + 0.125vw, 0.25rem) clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem)",
+                      fontSize: "clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)",
+                    }}
+                  >
+                    Show more results
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </main>
